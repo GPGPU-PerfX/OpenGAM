@@ -61,13 +61,17 @@ if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/CMakeLists.txt
         "Initialize the submodule and re-run CMake:\n"
         "  git submodule update --init")
 endif()
+
 set(INSTALL_GTEST OFF CACHE BOOL "Do not install GoogleTest" FORCE)
 set(BUILD_GMOCK OFF CACHE BOOL "Do not build GoogleMock" FORCE)
+
 add_subdirectory(third_party/googletest "${CMAKE_BINARY_DIR}/googletest" EXCLUDE_FROM_ALL)
 
 enable_testing()
+
 add_executable(opengam_abi_tests tests/gam_model_get_version_test.cpp)
 target_link_libraries(opengam_abi_tests PRIVATE opengam GTest::gtest_main)
+
 add_test(NAME opengam_abi_tests COMMAND opengam_abi_tests)
 
 install(TARGETS opengam

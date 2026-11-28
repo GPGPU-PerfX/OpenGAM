@@ -58,6 +58,7 @@ if [[ "$(uname -s)" == Linux ]]; then
 else
     export ASAN_OPTIONS=halt_on_error=1
 fi
+
 export UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
 
 "$ctest" --test-dir "$build_dir" --output-on-failure --no-tests=error --parallel
