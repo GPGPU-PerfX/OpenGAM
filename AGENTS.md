@@ -12,13 +12,13 @@ repository: layout, how to build, public ABI rules, and review targets.
 - `include/opengam_typedefs.h` — function-pointer types for loading
   those entry points dynamically (for example with `dlopen`).
 - `src/opengam.cpp` — the shared-library implementation of that ABI.
-- `opengam.def` — the public export list on ELF (GNU version script)
-  and Windows (module-definition file).
-- `opengam_macos.exports` — the public export list on Darwin (ld64
+- `opengam.def` — the public export list on Linux (GNU version script).
+- `opengam_macos.exports` — the public export list on macOS (ld64
   exported-symbols list). Names use the leading underscore the
   Mach-O linker expects.
 - `CMakeLists.txt` — builds `libopengam.so` (soname `libopengam.so.0`)
-  on ELF, and `libopengam.dylib` on Darwin.
+  on Linux, and `libopengam.dylib` on macOS. Linux and macOS are the
+  only supported platforms for now.
 - `build.sh` — the developer build entry point.
 - `doc/` — project documentation, including the branch and release
   policy in `doc/branch-and-release.md`.
@@ -57,7 +57,7 @@ with hidden visibility by default. Only the symbols named in
   types, and C++ exceptions must not cross the ABI boundary.
 - Entry points use the `GAMAPI` calling convention, written as
   `GAMresult GAMAPI gamModelGetVersion(int *version)`. `GAMAPI` is
-  `__stdcall` on Windows and empty on other platforms.
+  empty on Linux and macOS.
 - The first published entry point is `gamModelGetVersion`. It writes a
   packed version of `(1000 * major + 10 * minor)`. The current model
   version is 0.1, which is 10. A null out-pointer returns

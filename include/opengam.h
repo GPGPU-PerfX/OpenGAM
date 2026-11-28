@@ -46,18 +46,14 @@
  *
  *     GAMresult GAMAPI gamModelGetVersion(int *version);
  *
- * On Windows this is `__stdcall`. On other platforms it is empty.
- * Shared-library export is controlled by `opengam.def` on ELF and
- * Windows, and by `opengam_macos.exports` on Darwin, not by this
- * macro. When `GAM_BUILD_LIBRARY` is defined, public declarations in
+ * It is empty on the supported platforms (Linux and macOS).
+ * Shared-library export is controlled by `opengam.def` on Linux
+ * and by `opengam_macos.exports` on macOS, not by this macro.
+ * When `GAM_BUILD_LIBRARY` is defined, public declarations in
  * this header also receive default visibility so the linker can
  * export the symbols named in those files.
  */
-#ifdef _WIN32
-#define GAMAPI __stdcall
-#else
 #define GAMAPI
-#endif
 
 #ifdef __cplusplus
 extern "C" {

@@ -86,6 +86,11 @@ if [[ "$mode" == clean ]]; then
     exit 0
 fi
 
+case "$(uname -s)" in
+    Linux|Darwin) ;;
+    *) fail "OpenGAM currently supports Linux and macOS only" ;;
+esac
+
 command -v cmake >/dev/null 2>&1 || fail "cmake is not on PATH"
 
 build_type=Debug

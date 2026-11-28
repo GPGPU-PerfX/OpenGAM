@@ -26,17 +26,17 @@ target_include_directories(opengam
 target_compile_definitions(opengam PRIVATE GAM_BUILD_LIBRARY)
 target_compile_options(opengam PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions -fno-rtti>)
 
-# Public export lists: opengam.def is a GNU version script on ELF and a
-# module-definition file on Windows. opengam_macos.exports is the
-# exported-symbols list for Darwin.
-if (WIN32)
-    target_sources(opengam PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/opengam.def)
-elseif (APPLE)
+# Public export lists: opengam.def is a GNU version script on Linux;
+# opengam_macos.exports is the exported-symbols list on macOS.
+# Linux and macOS are the only supported platforms for now.
+if (APPLE)
     target_link_options(opengam PRIVATE
         "LINKER:-exported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/opengam_macos.exports")
-elseif (UNIX)
+elseif (CMAKE_SYSTEM_NAME STREQUAL "Linux")
     target_link_options(opengam PRIVATE
         "LINKER:--version-script=${CMAKE_CURRENT_SOURCE_DIR}/opengam.def")
+else()
+    message(FATAL_ERROR "OpenGAM currently supports Linux and macOS only")
 endif()
 
 option(GAM_ENABLE_SANITIZERS

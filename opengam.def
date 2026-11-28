@@ -2,9 +2,8 @@
  * Copyright 2026 Tianxiang Luo <JeremyLuo007@163.com>
  * SPDX-License-Identifier: Apache-2.0
  *
- * Public export list for the OpenGAM shared library. On ELF this file
- * is a GNU symbol version script. On Windows it is the module-definition
- * file passed to the linker.
+ * Public export list for the OpenGAM shared library on Linux. This
+ * file is a GNU symbol version script passed to the linker.
  */
 
 opengam {
