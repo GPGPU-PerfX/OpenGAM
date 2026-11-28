@@ -13,7 +13,7 @@ prefix="$root/install"
 
 usage() {
     cat <<'USAGE'
-Usage: ./build.sh <mode> [test] [install] [--prefix=<absolute path>]
+Usage: ./build.sh <mode> [check] [install] [--prefix=<absolute path>]
 
 A fresh build tree uses the Ninja generator when `ninja` is on PATH.
 An existing CMake cache keeps the generator it was created with;
@@ -27,7 +27,7 @@ Modes
              directory, then exit
 
 Options
-  test                     After a successful build, run ./run_tests.sh
+  check                    After a successful build, run ./run_tests.sh
   install                  After a successful build and passing tests,
                            install into the prefix
                            (default: <source>/install)
@@ -41,7 +41,7 @@ Examples
   ./build.sh rel
   ./build.sh dbg
   ./build.sh dbg_asan
-  ./build.sh dbg test
+  ./build.sh dbg check
   ./build.sh rel install
   ./build.sh dbg install --prefix=/usr/local
   ./build.sh clean
@@ -55,7 +55,7 @@ fail() {
 
 mode=""
 do_install=false
-do_test=false
+do_check=false
 
 while (($#)); do
     case "$1" in
@@ -67,8 +67,8 @@ while (($#)); do
             [[ -z "$mode" ]] || fail "choose exactly one of rel, dbg, dbg_asan, or clean"
             mode="$1"
             ;;
-        test)
-            do_test=true
+        check)
+            do_check=true
             ;;
         install)
             do_install=true
@@ -88,8 +88,8 @@ done
 [[ -n "$mode" ]] || { usage >&2; exit 2; }
 
 if [[ "$mode" == clean ]]; then
-    [[ "$do_install" == false && "$do_test" == false && "$prefix" == "$root/install" ]] ||
-        fail "clean does not take test, install, or --prefix"
+    [[ "$do_install" == false && "$do_check" == false && "$prefix" == "$root/install" ]] ||
+        fail "clean does not take check, install, or --prefix"
     default_install="$root/install"
     rm -rf -- "$build_dir"
     printf 'Removed %s\n' "$build_dir"
@@ -134,8 +134,8 @@ cmake "${cmake_args[@]}"
 
 cmake --build "$build_dir" --parallel
 
-# install implies a passing test run first. GoogleTest is not installed.
-if [[ "$do_test" == true || "$do_install" == true ]]; then
+# install implies a passing ./run_tests.sh run first. GoogleTest is not installed.
+if [[ "$do_check" == true || "$do_install" == true ]]; then
     "$root/run_tests.sh"
 fi
 

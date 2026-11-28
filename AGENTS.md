@@ -84,7 +84,7 @@ Build first, then run the tests against that `build/` tree:
 The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
 `./run_tests.sh` does not take a build mode and does not rebuild. If
 `build/` is missing or has no tests, it exits with a short message to
-build first. `./build.sh <mode> test` builds and then runs
+build first. `./build.sh <mode> check` builds and then runs
 `./run_tests.sh`.
 
 Pushes and pull requests to `develop` and `master` run

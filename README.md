@@ -98,7 +98,7 @@ Build first, then run the tests against that `build/` tree:
 The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
 `./run_tests.sh` does not configure or rebuild. If `build/` is missing
 or has no tests, it exits with a short message to build first.
-`./build.sh <mode> test` is a shorthand that builds and then runs
+`./build.sh <mode> check` is a shorthand that builds and then runs
 `./run_tests.sh`. `./build.sh <mode> install` runs the tests before
 installing.
 
