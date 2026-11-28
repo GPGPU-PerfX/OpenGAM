@@ -18,7 +18,8 @@
  * source file, line, and function of the call site. In `rel` the macros are compiled out and do not evaluate their
  * arguments.
  *
- * The output destination is selected by the `OGAM_LOG_FILE` environment variable: `stderr`, `stdout`, or a file path.
+ * The output destination is selected by the `OPENGAM_LOG_FILE` environment variable: `stderr`,
+ * `stdout`, or a file path.
  * If the variable is unset or empty, records are written to both stderr and stdout. ANSI color is applied only when a
  * stream is a TTY. A later settings layer can override this choice.
  *

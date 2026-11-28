@@ -183,7 +183,7 @@ void writeFilePath(const char* pPath, const char* pMessage)
 // =====================================================================================================================
 void writeToDestination(LogLevel level, const char* pMessage)
 {
-    const char* pDest = std::getenv("OGAM_LOG_FILE");
+    const char* pDest = std::getenv("OPENGAM_LOG_FILE");
     if (pDest == nullptr || pDest[0] == '\0')
     {
         writeStream(stderr, STDERR_FILENO, level, pMessage);
