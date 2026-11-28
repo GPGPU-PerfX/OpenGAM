@@ -3,6 +3,10 @@
 OpenGAM (Open-Source GPU Architecture Model) is an open-source GPU architecture
 model. It is licensed under the Apache License 2.0.
 
+The public C API is declared in [`include/opengam.h`](include/opengam.h). The
+first exported entry point is `gamModelGetVersion`. Building the tree produces
+the shared library `libopengam.so`.
+
 ## Branches
 
 - `develop` is the default development branch and the default pull-request
@@ -13,3 +17,39 @@ model. It is licensed under the Apache License 2.0.
 Releases are a periodic, explicit port of `develop` onto `master`. There is
 no automatic merge from `develop` to `master`. See
 [doc/branch-and-release.md](doc/branch-and-release.md).
+
+## Building
+
+```bash
+./build.sh rel
+```
+
+This configures a Release build and produces `build/libopengam.so`. Other
+modes:
+
+```bash
+./build.sh dbg              # Debug
+./build.sh dbg_asan         # Debug with AddressSanitizer and UndefinedBehaviorSanitizer
+./build.sh rel install      # Build and install to ./local-sdk
+./build.sh clean            # Remove the build directory
+```
+
+Pass extra CMake configure arguments after `--`. For example, to install
+somewhere other than `./local-sdk`:
+
+```bash
+./build.sh rel install -- -DCMAKE_INSTALL_PREFIX=/usr/local
+```
+
+`./build.sh --help` lists the same options. You can also invoke CMake
+directly:
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+```
+
+## Contributing
+
+See [AGENTS.md](AGENTS.md) for the repository layout, public ABI rules, and
+the expected pull-request target.
