@@ -121,7 +121,7 @@ The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
 - If that binary is missing, it exits with a short message to build first.
 - Extra arguments are passed through, so `./run_tests.sh --gtest_filter=ModelGetVersionTest.*`
   runs one module.
-- Util coverage lives in `UtilAlignTest`, `LogTest`, and `AssertTest`.
+- Util coverage lives in `UtilAlignTest`, `UtilLogTest`, and `UtilAssertTest`.
 - Live log destinations are selected by `OPENGAM_LOG_DEST` (`stderr`, `stdout`,
   and `file=<path>`, comma-separated). The default is stderr and stdout.
 - Accumulated records can be copied with `dumpLogsToMemory` and `dumpLogsToFile`.

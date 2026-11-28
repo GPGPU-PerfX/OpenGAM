@@ -9,7 +9,7 @@
 
 #include <gtest/gtest.h>
 
-class AssertTest : public ::testing::Test
+class UtilAssertTest : public ::testing::Test
 {
 protected:
     void SetUp() override { ::testing::FLAGS_gtest_death_test_style = "threadsafe"; }
@@ -17,7 +17,7 @@ protected:
     void TearDown() override { opengam::util::unregisterLogCallback(); }
 };
 
-TEST_F(AssertTest, MacrosAreNoOpsInReleaseOrPassWhenTrue)
+TEST_F(UtilAssertTest, MacrosAreNoOpsInReleaseOrPassWhenTrue)
 {
     int evaluated = 0;
 
@@ -37,23 +37,23 @@ TEST_F(AssertTest, MacrosAreNoOpsInReleaseOrPassWhenTrue)
 
 #if defined(GAM_ENABLE_DEBUG)
 
-TEST_F(AssertTest, AssertFailureLogsAndTraps)
+TEST_F(UtilAssertTest, AssertFailureLogsAndTraps)
 {
     ASSERT_DEATH({ GAM_ASSERT(false); }, "assertion failed: false");
 }
 
-TEST_F(AssertTest, AssertMessageFailureLogsAndTraps)
+TEST_F(UtilAssertTest, AssertMessageFailureLogsAndTraps)
 {
     ASSERT_DEATH(
         { GAM_ASSERT_MSG(1 == 2, "values %d and %d", 1, 2); }, "assertion failed: 1 == 2 \\(values 1 and 2\\)");
 }
 
-TEST_F(AssertTest, NotImplementedLogsAndTraps)
+TEST_F(UtilAssertTest, NotImplementedLogsAndTraps)
 {
     ASSERT_DEATH({ GAM_NOT_IMPLEMENTED(); }, "assertion failed: GAM_NOT_IMPLEMENTED");
 }
 
-TEST_F(AssertTest, NeverReachedLogsAndTraps)
+TEST_F(UtilAssertTest, NeverReachedLogsAndTraps)
 {
     ASSERT_DEATH({ GAM_NEVER_REACHED(); }, "assertion failed: GAM_NEVER_REACHED");
 }

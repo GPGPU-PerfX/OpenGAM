@@ -29,7 +29,7 @@ void captureCallback(opengam::util::LogLevel level, const char* message, void* u
     capture->records.emplace_back(level, message != nullptr ? message : "");
 }
 
-class LogTest : public ::testing::Test
+class UtilLogTest : public ::testing::Test
 {
 protected:
     void TearDown() override
@@ -47,7 +47,7 @@ std::string readFile(const std::string& path)
 
 } // namespace
 
-TEST_F(LogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
+TEST_F(UtilLogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
 {
     Capture capture;
     opengam::util::registerLogCallback(captureCallback, &capture);
@@ -93,7 +93,7 @@ TEST_F(LogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
 #endif
 }
 
-TEST_F(LogTest, UnregisterLogCallbackClearsCallback)
+TEST_F(UtilLogTest, UnregisterLogCallbackClearsCallback)
 {
     Capture first;
     Capture second;
@@ -114,7 +114,7 @@ TEST_F(LogTest, UnregisterLogCallbackClearsCallback)
 #endif
 }
 
-TEST_F(LogTest, DumpLogsToMemoryCopiesAccumulatedRecords)
+TEST_F(UtilLogTest, DumpLogsToMemoryCopiesAccumulatedRecords)
 {
     std::size_t needed = 0;
     ASSERT_TRUE(opengam::util::dumpLogsToMemory(nullptr, &needed));
@@ -142,7 +142,7 @@ TEST_F(LogTest, DumpLogsToMemoryCopiesAccumulatedRecords)
     EXPECT_FALSE(opengam::util::dumpLogsToMemory(nullptr, nullptr));
 }
 
-TEST_F(LogTest, DumpLogsToFileWritesAccumulatedRecords)
+TEST_F(UtilLogTest, DumpLogsToFileWritesAccumulatedRecords)
 {
     GAM_LOG_WARN("dump-file-token");
 
@@ -165,7 +165,7 @@ TEST_F(LogTest, DumpLogsToFileWritesAccumulatedRecords)
     std::remove(path.c_str());
 }
 
-TEST_F(LogTest, EnvDestFileReceivesLiveRecords)
+TEST_F(UtilLogTest, EnvDestFileReceivesLiveRecords)
 {
     const std::string path = testing::TempDir() + "opengam-env-log.txt";
     std::remove(path.c_str());
