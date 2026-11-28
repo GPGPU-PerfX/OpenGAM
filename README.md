@@ -7,7 +7,7 @@ The public C API is declared in [`include/opengam.h`](include/opengam.h). The
 first exported entry point is `gamModelGetVersion`. Function-pointer types
 for loading the library dynamically (for example with `dlopen`) are in
 [`include/opengam_typedefs.h`](include/opengam_typedefs.h). Building the tree
-produces the shared library `libopengam.so`.
+produces the shared library `libopengam.so` on ELF, or `libopengam.dylib` on Darwin.
 
 ## Branches
 
@@ -26,7 +26,7 @@ no automatic merge from `develop` to `master`. See
 ./build.sh rel
 ```
 
-This configures a Release build and produces `build/libopengam.so`. A
+This configures a Release build and produces `build/libopengam.so` on ELF, or `build/libopengam.dylib` on Darwin. A
 fresh build tree uses Ninja when `ninja` is on PATH. Other modes:
 
 ```bash

@@ -26,11 +26,15 @@ target_include_directories(opengam
 target_compile_definitions(opengam PRIVATE GAM_BUILD_LIBRARY)
 target_compile_options(opengam PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions -fno-rtti>)
 
-# Public export list in opengam.def: GNU version script on ELF, module
-# definition file on Windows.
+# Public export lists: opengam.def is a GNU version script on ELF and a
+# module-definition file on Windows. opengam_macos.exports is the
+# exported-symbols list for Darwin.
 if (WIN32)
     target_sources(opengam PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/opengam.def)
-elseif (UNIX AND NOT APPLE)
+elseif (APPLE)
+    target_link_options(opengam PRIVATE
+        "LINKER:-exported_symbols_list,${CMAKE_CURRENT_SOURCE_DIR}/opengam_macos.exports")
+elseif (UNIX)
     target_link_options(opengam PRIVATE
         "LINKER:--version-script=${CMAKE_CURRENT_SOURCE_DIR}/opengam.def")
 endif()

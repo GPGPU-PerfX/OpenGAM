@@ -19,17 +19,19 @@
  * The first published entry point is ::gamModelGetVersion. Additional
  * functions will be added to this header without changing the meaning of
  * existing symbols, result codes, or version encoding. New public
- * functions must also be added to the export list in `opengam.def`
- * and to the function-pointer types in `opengam_typedefs.h`.
+ * functions must also be added to `opengam.def`, to
+ * `opengam_macos.exports`, and to the function-pointer types in
+ * `opengam_typedefs.h`.
  *
- * Callers that load `libopengam.so` dynamically should include
- * `opengam_typedefs.h` instead of this header alone.
+ * Callers that load the shared library dynamically (`libopengam.so`
+ * or `libopengam.dylib`) should include `opengam_typedefs.h` instead
+ * of this header alone.
  *
- * When building the shared library (`libopengam.so` or the equivalent
- * on other platforms), define `GAM_BUILD_LIBRARY` so that public
- * declarations use default ELF visibility and can be exported from
- * `opengam.def`. Applications that include this header should not
- * define `GAM_BUILD_LIBRARY`.
+ * When building the shared library, define `GAM_BUILD_LIBRARY` so
+ * that public declarations use default visibility and can be
+ * exported from `opengam.def` or `opengam_macos.exports`.
+ * Applications that include this header should not define
+ * `GAM_BUILD_LIBRARY`.
  */
 
 #ifndef __opengam_h__
@@ -45,10 +47,11 @@
  *     GAMresult GAMAPI gamModelGetVersion(int *version);
  *
  * On Windows this is `__stdcall`. On other platforms it is empty.
- * Shared-library export is controlled by `opengam.def`, not by this
+ * Shared-library export is controlled by `opengam.def` on ELF and
+ * Windows, and by `opengam_macos.exports` on Darwin, not by this
  * macro. When `GAM_BUILD_LIBRARY` is defined, public declarations in
- * this header also receive default ELF visibility so the linker can
- * export the symbols named in that file.
+ * this header also receive default visibility so the linker can
+ * export the symbols named in those files.
  */
 #ifdef _WIN32
 #define GAMAPI __stdcall

@@ -1,0 +1,9 @@
+# Copyright 2026 Tianxiang Luo <JeremyLuo007@163.com>
+# SPDX-License-Identifier: Apache-2.0
+#
+# Public export list for the OpenGAM shared library on Darwin. Each
+# line is a C symbol with the leading underscore expected by ld64.
+# The linker is invoked with -exported_symbols_list pointing at this
+# file.
+
+_gamModelGetVersion

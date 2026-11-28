@@ -116,4 +116,8 @@ if [[ "$do_install" == true ]]; then
     printf 'Installed to %s\n' "$install_prefix"
 fi
 
-printf 'Built %s/libopengam.so\n' "$build_dir"
+if [[ "$(uname -s)" == Darwin ]]; then
+    printf 'Built %s/libopengam.dylib\n' "$build_dir"
+else
+    printf 'Built %s/libopengam.so\n' "$build_dir"
+fi

@@ -9,7 +9,7 @@
  *
  * Include this header when the caller obtains entry points at run time
  * (for example with `dlopen` and `dlsym`) rather than linking
- * `libopengam.so` directly:
+ * `libopengam.so` or `libopengam.dylib` directly:
  *
  *     #include <opengam_typedefs.h>
  *
@@ -23,8 +23,9 @@
  * `PFN_gamModelGetVersion_v10`.
  *
  * When a new public function is added, declare it in `opengam.h`,
- * export it from `opengam.def`, and add both the versioned typedef
- * and the latest-version macro here in the same change.
+ * export it from `opengam.def` and `opengam_macos.exports`, and add
+ * both the versioned typedef and the latest-version macro here in
+ * the same change.
  */
 
 #ifndef __opengam_typedefs_h__

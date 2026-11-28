@@ -12,9 +12,13 @@ repository: layout, how to build, public ABI rules, and review targets.
 - `include/opengam_typedefs.h` — function-pointer types for loading
   those entry points dynamically (for example with `dlopen`).
 - `src/opengam.cpp` — the shared-library implementation of that ABI.
-- `opengam.def` — the public export list. On ELF this is a GNU symbol
-  version script; on Windows it is the module-definition file.
-- `CMakeLists.txt` — builds `libopengam.so` (soname `libopengam.so.0`).
+- `opengam.def` — the public export list on ELF (GNU version script)
+  and Windows (module-definition file).
+- `opengam_macos.exports` — the public export list on Darwin (ld64
+  exported-symbols list). Names use the leading underscore the
+  Mach-O linker expects.
+- `CMakeLists.txt` — builds `libopengam.so` (soname `libopengam.so.0`)
+  on ELF, and `libopengam.dylib` on Darwin.
 - `build.sh` — the developer build entry point.
 - `doc/` — project documentation, including the branch and release
   policy in `doc/branch-and-release.md`.
@@ -45,7 +49,7 @@ cmake --build build
 
 The library is C++17, built with exceptions and RTTI disabled, and
 with hidden visibility by default. Only the symbols named in
-`opengam.def` are exported.
+`opengam.def` or `opengam_macos.exports` are exported.
 
 ## Public ABI
 
@@ -60,7 +64,8 @@ with hidden visibility by default. Only the symbols named in
   `GAM_ERROR_INVALID_VALUE`.
 - When adding a new public function, declare it in `include/opengam.h`,
   implement it in the library, add its name to the `global:` list in
-  `opengam.def`, and add a versioned `PFN_<function>_v<version>` typedef
+  `opengam.def` and as `_<function>` in `opengam_macos.exports`, and
+  add a versioned `PFN_<function>_v<version>` typedef
   plus a `PFN_<function>` latest-version macro in
   `include/opengam_typedefs.h` in the same change. The `<version>`
   suffix is the packed model version that introduced the signature.
