@@ -69,9 +69,6 @@ while (($#)); do
             [[ -n "$install_prefix" ]] || fail "install_prefix is empty"
             [[ "$install_prefix" == /* ]] || fail "install_prefix must be an absolute path"
             ;;
-        --)
-            fail "CMake passthrough after -- is not supported; use install_prefix=<absolute path>"
-            ;;
         *)
             fail "unsupported argument: $1 (try ./build.sh --help)"
             ;;
