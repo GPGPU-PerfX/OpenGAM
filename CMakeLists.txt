@@ -39,12 +39,12 @@ else()
     message(FATAL_ERROR "OpenGAM currently supports Linux and macOS only")
 endif()
 
-option(GAM_ENABLE_SANITIZERS
+option(OPENGAM_ENABLE_SANITIZERS
     "Build with AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
-if(GAM_ENABLE_SANITIZERS)
+if(OPENGAM_ENABLE_SANITIZERS)
     if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
             OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-        message(FATAL_ERROR "GAM_ENABLE_SANITIZERS requires GCC or Clang")
+        message(FATAL_ERROR "OPENGAM_ENABLE_SANITIZERS requires GCC or Clang")
     endif()
     target_compile_options(opengam PUBLIC
         -fsanitize=address,undefined -fno-omit-frame-pointer)
