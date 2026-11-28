@@ -1,7 +1,8 @@
 # Copyright 2026 Tianxiang Luo <JeremyLuo007@163.com>
 # SPDX-License-Identifier: Apache-2.0
 #
-# Build OpenGAM on Ubuntu and macOS with the developer entry point, build.sh.
+# Build and test OpenGAM on Ubuntu and macOS with the developer entry
+# points, build.sh and run_tests.sh.
 
 name: CI
 
@@ -47,6 +48,8 @@ jobs:
             name: macos-dbg_asan
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - name: Install Ubuntu build tools
         if: runner.os == 'Linux'
@@ -58,3 +61,6 @@ jobs:
 
       - name: Build
         run: ./build.sh ${{ matrix.mode }}
+
+      - name: Test
+        run: ./run_tests.sh

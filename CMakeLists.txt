@@ -8,6 +8,19 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
+# Apply sanitizer flags to every target in this build, including
+# GoogleTest, which is added below with add_subdirectory.
+option(OPENGAM_ENABLE_SANITIZERS
+    "Build with AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
+if(OPENGAM_ENABLE_SANITIZERS)
+    if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
+            OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
+        message(FATAL_ERROR "OPENGAM_ENABLE_SANITIZERS requires GCC or Clang")
+    endif()
+    add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
+    add_link_options(-fsanitize=address,undefined)
+endif()
+
 add_library(opengam SHARED src/opengam.cpp)
 add_library(OpenGAM::opengam ALIAS opengam)
 
@@ -39,17 +52,28 @@ else()
     message(FATAL_ERROR "OpenGAM currently supports Linux and macOS only")
 endif()
 
-option(OPENGAM_ENABLE_SANITIZERS
-    "Build with AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
-if(OPENGAM_ENABLE_SANITIZERS)
-    if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
-            OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-        message(FATAL_ERROR "OPENGAM_ENABLE_SANITIZERS requires GCC or Clang")
-    endif()
-    target_compile_options(opengam PUBLIC
-        -fsanitize=address,undefined -fno-omit-frame-pointer)
-    target_link_options(opengam PUBLIC -fsanitize=address,undefined)
+# GoogleTest is a git submodule at third_party/googletest. Compile it
+# into the CMake build directory (build/googletest by default). Do not
+# install it with the library.
+if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/third_party/googletest/CMakeLists.txt")
+    message(FATAL_ERROR
+        "GoogleTest is missing from third_party/googletest. "
+        "Initialize the submodule and re-run CMake:\n"
+        "  git submodule update --init")
 endif()
+
+set(INSTALL_GTEST OFF CACHE BOOL "Do not install GoogleTest" FORCE)
+set(BUILD_GMOCK OFF CACHE BOOL "Do not build GoogleMock" FORCE)
+
+add_subdirectory(third_party/googletest "${CMAKE_BINARY_DIR}/googletest" EXCLUDE_FROM_ALL)
+
+# gamUnittests is the unit-test binary. Each source file is a test
+# module (a GoogleTest suite) with its own cases.
+add_executable(gamUnittests
+    tests/gam_model_get_version_test.cpp
+)
+
+target_link_libraries(gamUnittests PRIVATE opengam GTest::gtest_main)
 
 install(TARGETS opengam
     LIBRARY DESTINATION lib

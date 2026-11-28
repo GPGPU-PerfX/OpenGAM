@@ -13,7 +13,7 @@ prefix="$root/install"
 
 usage() {
     cat <<'USAGE'
-Usage: ./build.sh <mode> [install] [--prefix=<absolute path>]
+Usage: ./build.sh <mode> [check] [install] [--prefix=<absolute path>]
 
 A fresh build tree uses the Ninja generator when `ninja` is on PATH.
 An existing CMake cache keeps the generator it was created with;
@@ -27,17 +27,21 @@ Modes
              directory, then exit
 
 Options
-  install                  After a successful build, install into the prefix
+  check                    After a successful build, run ./run_tests.sh
+  install                  After a successful build and passing tests,
+                           install into the prefix
                            (default: <source>/install)
   --prefix=<path>          Override the install prefix. The path must be
                            absolute.
 
-Arguments may appear in any order.
+Arguments may appear in any order. ./run_tests.sh also runs the tests
+against an existing build/ tree without rebuilding.
 
 Examples
   ./build.sh rel
   ./build.sh dbg
   ./build.sh dbg_asan
+  ./build.sh dbg check
   ./build.sh rel install
   ./build.sh dbg install --prefix=/usr/local
   ./build.sh clean
@@ -51,6 +55,7 @@ fail() {
 
 mode=""
 do_install=false
+do_check=false
 
 while (($#)); do
     case "$1" in
@@ -61,6 +66,9 @@ while (($#)); do
         rel|dbg|dbg_asan|clean)
             [[ -z "$mode" ]] || fail "choose exactly one of rel, dbg, dbg_asan, or clean"
             mode="$1"
+            ;;
+        check)
+            do_check=true
             ;;
         install)
             do_install=true
@@ -80,8 +88,8 @@ done
 [[ -n "$mode" ]] || { usage >&2; exit 2; }
 
 if [[ "$mode" == clean ]]; then
-    [[ "$do_install" == false && "$prefix" == "$root/install" ]] ||
-        fail "clean does not take install or --prefix"
+    [[ "$do_install" == false && "$do_check" == false && "$prefix" == "$root/install" ]] ||
+        fail "clean does not take check, install, or --prefix"
     default_install="$root/install"
     rm -rf -- "$build_dir"
     printf 'Removed %s\n' "$build_dir"
@@ -125,6 +133,11 @@ fi
 cmake "${cmake_args[@]}"
 
 cmake --build "$build_dir" --parallel
+
+# install implies a passing ./run_tests.sh run first. GoogleTest is not installed.
+if [[ "$do_check" == true || "$do_install" == true ]]; then
+    "$root/run_tests.sh"
+fi
 
 if [[ "$do_install" == true ]]; then
     cmake --install "$build_dir"
