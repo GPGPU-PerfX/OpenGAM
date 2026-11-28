@@ -139,15 +139,6 @@ void appendDump(const char* message)
 }
 
 // =====================================================================================================================
-void skipSpaces(const char*& cursor)
-{
-    while (*cursor != '\0' && std::isspace(static_cast<unsigned char>(*cursor)) != 0)
-    {
-        ++cursor;
-    }
-}
-
-// =====================================================================================================================
 bool tokenEquals(const char* begin, const char* end, const char* expected)
 {
     const std::size_t length = static_cast<std::size_t>(end - begin);
@@ -193,72 +184,46 @@ void writeFilePath(const char* path, const char* message)
 // =====================================================================================================================
 void writeLiveOutputs(LogLevel level, const char* message)
 {
-    const char* dest     = std::getenv("OPENGAM_LOG_DEST");
-    bool        toStderr = true;
-    bool        toStdout = true;
+    const char* dest = std::getenv("OGAM_LOG_FILE");
 
-    if (dest != nullptr && dest[0] != '\0')
-    {
-        toStderr = false;
-        toStdout = false;
-    }
-
-    const char* cursor = (dest != nullptr) ? dest : "";
-
-    while (dest != nullptr && dest[0] != '\0' && *cursor != '\0')
-    {
-        skipSpaces(cursor);
-        if (*cursor == '\0')
-        {
-            break;
-        }
-
-        const char* begin = cursor;
-        while (*cursor != '\0' && *cursor != ',')
-        {
-            ++cursor;
-        }
-
-        const char* end = cursor;
-        while (end > begin && std::isspace(static_cast<unsigned char>(end[-1])) != 0)
-        {
-            --end;
-        }
-
-        if (tokenEquals(begin, end, "stderr"))
-        {
-            toStderr = true;
-        }
-        else if (tokenEquals(begin, end, "stdout"))
-        {
-            toStdout = true;
-        }
-        else if (end > begin + 5 && std::strncmp(begin, "file=", 5) == 0)
-        {
-            const std::size_t pathLen = static_cast<std::size_t>(end - (begin + 5));
-            if (pathLen > 0 && pathLen < 4096)
-            {
-                char path[4096];
-                std::memcpy(path, begin + 5, pathLen);
-                path[pathLen] = '\0';
-                writeFilePath(path, message);
-            }
-        }
-
-        if (*cursor == ',')
-        {
-            ++cursor;
-        }
-    }
-
-    if (toStderr)
+    if (dest == nullptr || dest[0] == '\0')
     {
         writeStream(stderr, STDERR_FILENO, level, message);
+        writeStream(stdout, STDOUT_FILENO, level, message);
+        return;
     }
 
-    if (toStdout)
+    const char* begin = dest;
+    while (*begin != '\0' && std::isspace(static_cast<unsigned char>(*begin)) != 0)
+    {
+        ++begin;
+    }
+
+    const char* end = begin + std::strlen(begin);
+    while (end > begin && std::isspace(static_cast<unsigned char>(end[-1])) != 0)
+    {
+        --end;
+    }
+
+    if (tokenEquals(begin, end, "stderr"))
+    {
+        writeStream(stderr, STDERR_FILENO, level, message);
+        return;
+    }
+
+    if (tokenEquals(begin, end, "stdout"))
     {
         writeStream(stdout, STDOUT_FILENO, level, message);
+        return;
+    }
+
+    const std::size_t pathLen = static_cast<std::size_t>(end - begin);
+    if (pathLen > 0 && pathLen < 4096)
+    {
+        char path[4096];
+        std::memcpy(path, begin, pathLen);
+        path[pathLen] = '\0';
+        writeFilePath(path, message);
     }
 }
 

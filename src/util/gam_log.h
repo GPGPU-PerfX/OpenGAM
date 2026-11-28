@@ -19,11 +19,11 @@
  * function of the call site. In `rel` the macros are compiled out and
  * do not evaluate their arguments.
  *
- * Live output goes to the destinations in the `OPENGAM_LOG_DEST`
- * environment variable, a comma-separated list of `stderr`, `stdout`,
- * and `file=<path>`. If the variable is unset or empty, records are
- * written to both stderr and stdout. ANSI color is applied only when
- * a stream is a TTY. A later settings layer can override this choice.
+ * Live output goes to the destination in the `OGAM_LOG_FILE`
+ * environment variable: `stderr`, `stdout`, or a file path. If the
+ * variable is unset or empty, records are written to both stderr and
+ * stdout. ANSI color is applied only when a stream is a TTY. A later
+ * settings layer can override this choice.
  *
  * An optional callback, installed with
  * ::opengam::util::registerLogCallback, also receives the plain

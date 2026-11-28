@@ -35,7 +35,7 @@ protected:
     void TearDown() override
     {
         opengam::util::unregisterLogCallback();
-        ::unsetenv("OPENGAM_LOG_DEST");
+        ::unsetenv("OGAM_LOG_FILE");
     }
 };
 
@@ -165,13 +165,12 @@ TEST_F(UtilLogTest, DumpLogsToFileWritesAccumulatedRecords)
     std::remove(path.c_str());
 }
 
-TEST_F(UtilLogTest, EnvDestFileReceivesLiveRecords)
+TEST_F(UtilLogTest, EnvLogFileReceivesLiveRecords)
 {
     const std::string path = testing::TempDir() + "opengam-env-log.txt";
     std::remove(path.c_str());
 
-    const std::string dest = "file=" + path;
-    ASSERT_EQ(::setenv("OPENGAM_LOG_DEST", dest.c_str(), 1), 0);
+    ASSERT_EQ(::setenv("OGAM_LOG_FILE", path.c_str(), 1), 0);
 
     GAM_LOG_ERROR("env-file-token");
 
