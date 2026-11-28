@@ -225,8 +225,7 @@ root.
 A pre-commit hook in `scripts/pre-commit.sh` formats staged first-party C/C++ files
 with that style and re-stages them so the commit contains the formatted result.
 
-`./build.sh` installs the hook when none is present. An existing hook is left
-unchanged. You can also install it manually with:
+Install it once with:
 
 ```bash
 cp scripts/pre-commit.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit

@@ -112,7 +112,5 @@ See [AGENTS.md](AGENTS.md) for the repository layout, public ABI rules, and the 
 pull-request target.
 
 An optional pre-commit hook formats staged first-party C/C++ files with `.clang-format`.
-`./build.sh` installs the hook when none is present; an existing hook is left unchanged.
-To install it manually, run
-`cp scripts/pre-commit.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
+Install it with `cp scripts/pre-commit.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
 Use `git commit --no-verify` to skip the hook. See [AGENTS.md](AGENTS.md) for details.

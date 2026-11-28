@@ -11,23 +11,6 @@ root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 build_dir="$root/build"
 prefix="$root/install"
 
-# Install the optional pre-commit hook when this checkout has none.
-# Use the Git hooks path so a worktree is handled correctly. Skip
-# quietly when this is not a git checkout. Do not overwrite an
-# existing hook, and do not fail the build if the copy cannot be made.
-hook_src="$root/scripts/pre-commit.sh"
-if hook_dst="$(git -C "$root" rev-parse --git-path hooks/pre-commit 2>/dev/null)" &&
-    [[ -n "$hook_dst" ]]; then
-    if [[ "$hook_dst" != /* ]]; then
-        hook_dst="$root/$hook_dst"
-    fi
-    if [[ -f "$hook_src" && ! -e "$hook_dst" ]]; then
-        if cp "$hook_src" "$hook_dst" 2>/dev/null && chmod +x "$hook_dst" 2>/dev/null; then
-            echo "Installed the Git pre-commit hook."
-        fi
-    fi
-fi
-
 usage() {
     cat <<'USAGE'
 Usage: ./build.sh <mode> [check] [install] [--prefix=<absolute path>]
