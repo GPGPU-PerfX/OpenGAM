@@ -20,6 +20,7 @@ repository: layout, how to build, public ABI rules, and review targets.
   on Linux, and `libopengam.dylib` on macOS. Linux and macOS are the
   only supported platforms for now.
 - `build.sh` — the developer build entry point.
+- `.github/workflows/ci.yml` — GitHub Actions builds on Ubuntu.
 - `doc/` — project documentation, including the branch and release
   policy in `doc/branch-and-release.md`.
 
@@ -28,6 +29,12 @@ repository: layout, how to build, public ABI rules, and review targets.
 The supported entry point is `build.sh`, which can be run from any
 directory. A fresh build tree uses the Ninja generator when `ninja`
 is on PATH; `./build.sh clean` is required to switch generators.
+
+Build dependencies are CMake 3.16 or newer, a C++17 compiler (GCC or
+Clang), and Ninja when using the default generator. On Ubuntu:
+`sudo apt-get install cmake g++ ninja-build`. On macOS: the Xcode
+Command Line Tools, plus CMake and Ninja (for example
+`brew install cmake ninja`).
 
 ```bash
 ./build.sh rel        # Release
@@ -50,6 +57,10 @@ cmake --build build
 The library is C++17, built with exceptions and RTTI disabled, and
 with hidden visibility by default. Only the symbols named in
 `opengam.def` or `opengam_macos.exports` are exported.
+
+Pushes and pull requests to `develop` and `master` run
+`.github/workflows/ci.yml` on Ubuntu 24.04, which calls
+`./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`.
 
 ## Public ABI
 
