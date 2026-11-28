@@ -38,8 +38,8 @@ is on PATH; `./build.sh clean` is required to switch generators.
 ```
 
 `install` places headers and the library in `./install` unless an
-absolute `prefix=<path>` is given, for example
-`./build.sh rel install prefix=/usr/local`. `./build.sh --help`
+absolute `--prefix=<path>` is given, for example
+`./build.sh rel install --prefix=/usr/local`. `./build.sh --help`
 lists the same options. Equivalent CMake invocation:
 
 ```bash

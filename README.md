@@ -38,10 +38,10 @@ fresh build tree uses Ninja when `ninja` is on PATH. Other modes:
 ```
 
 To install somewhere other than `./install`, pass an absolute
-`prefix`:
+`--prefix`:
 
 ```bash
-./build.sh rel install prefix=/usr/local
+./build.sh rel install --prefix=/usr/local
 ```
 
 `./build.sh --help` lists the same options. Arguments may appear in any
