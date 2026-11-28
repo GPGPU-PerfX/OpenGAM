@@ -52,7 +52,12 @@ else
     ctest=ctest
 fi
 
-export ASAN_OPTIONS=detect_leaks=1:halt_on_error=1
+# Leak detection is not supported by AddressSanitizer on macOS.
+if [[ "$(uname -s)" == Linux ]]; then
+    export ASAN_OPTIONS=detect_leaks=1:halt_on_error=1
+else
+    export ASAN_OPTIONS=halt_on_error=1
+fi
 export UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
 
 "$ctest" --test-dir "$build_dir" --output-on-failure --no-tests=error --parallel
