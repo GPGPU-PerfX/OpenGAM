@@ -30,7 +30,7 @@ directory:
 ./build.sh clean
 ```
 
-`install` places headers and the library in `./local-sdk` unless
+`install` places headers and the library in `./install` unless
 `-DCMAKE_INSTALL_PREFIX` is passed after `--`. `./build.sh --help`
 lists the same options. Equivalent CMake invocation:
 

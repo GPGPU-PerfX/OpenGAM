@@ -30,12 +30,12 @@ modes:
 ```bash
 ./build.sh dbg              # Debug
 ./build.sh dbg_asan         # Debug with AddressSanitizer and UndefinedBehaviorSanitizer
-./build.sh rel install      # Build and install to ./local-sdk
+./build.sh rel install      # Build and install to ./install
 ./build.sh clean            # Remove the build directory
 ```
 
 Pass extra CMake configure arguments after `--`. For example, to install
-somewhere other than `./local-sdk`:
+somewhere other than `./install`:
 
 ```bash
 ./build.sh rel install -- -DCMAKE_INSTALL_PREFIX=/usr/local

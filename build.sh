@@ -9,7 +9,7 @@ set -euo pipefail
 
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 build_dir="$root/build"
-install_prefix="$root/local-sdk"
+install_prefix="$root/install"
 
 usage() {
     cat <<'USAGE'
@@ -23,7 +23,7 @@ Modes
 
 Options
   install    After a successful build, install into the prefix
-             (default: <source>/local-sdk). Override with
+             (default: <source>/install). Override with
              -- -DCMAKE_INSTALL_PREFIX=<path>
   --         Pass the remaining arguments to the CMake configure step
 
