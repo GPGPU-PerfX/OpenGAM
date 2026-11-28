@@ -71,8 +71,8 @@ cmake --build build
 ## Continuous integration
 
 Pushes and pull requests to `develop` and `master` run GitHub Actions
-on Ubuntu 24.04. The workflow installs the dependencies above and runs
-`./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`.
+on Ubuntu 24.04 and macos-latest. The workflow installs the dependencies
+above and runs `./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`.
 
 ## Contributing
 
