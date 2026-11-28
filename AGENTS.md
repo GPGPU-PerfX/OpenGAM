@@ -146,6 +146,8 @@ The workflow:
 
 - Entry points use the `GAMAPI` calling convention, written as
   `GAMresult GAMAPI gamModelGetVersion(int* version)`.
+- Function-pointer typedefs use the same order, as in
+  `typedef GAMresult GAMAPI (*PFN_gamModelGetVersion_v10)(int* version);`.
 - `GAMAPI` is empty on Linux and macOS.
 
 - The first published entry point is `gamModelGetVersion`.

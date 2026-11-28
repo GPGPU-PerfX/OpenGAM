@@ -52,7 +52,7 @@ extern "C" {
  * and returns ::GAM_SUCCESS, or ::GAM_ERROR_INVALID_VALUE when
  * \p version is null.
  */
-typedef GAMresult(GAMAPI* PFN_gamModelGetVersion_v10)(int* version);
+typedef GAMresult GAMAPI (*PFN_gamModelGetVersion_v10)(int* version);
 
 #ifdef __cplusplus
 }
