@@ -4,8 +4,10 @@ OpenGAM (Open-Source GPU Architecture Model) is an open-source GPU architecture
 model. It is licensed under the Apache License 2.0.
 
 The public C API is declared in [`include/opengam.h`](include/opengam.h). The
-first exported entry point is `gamModelGetVersion`. Building the tree produces
-the shared library `libopengam.so`.
+first exported entry point is `gamModelGetVersion`. Function-pointer types
+for loading the library dynamically (for example with `dlopen`) are in
+[`include/opengam_typedefs.h`](include/opengam_typedefs.h). Building the tree
+produces the shared library `libopengam.so`.
 
 ## Branches
 

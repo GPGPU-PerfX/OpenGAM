@@ -52,4 +52,4 @@ install(TARGETS opengam
     ARCHIVE DESTINATION lib
     RUNTIME DESTINATION bin
 )
-install(FILES include/opengam.h DESTINATION include)
+install(FILES include/opengam.h include/opengam_typedefs.h DESTINATION include)

@@ -19,7 +19,11 @@
  * The first published entry point is ::gamModelGetVersion. Additional
  * functions will be added to this header without changing the meaning of
  * existing symbols, result codes, or version encoding. New public
- * functions must also be added to the export list in `opengam.def`.
+ * functions must also be added to the export list in `opengam.def`
+ * and to the function-pointer types in `opengam_typedefs.h`.
+ *
+ * Callers that load `libopengam.so` dynamically should include
+ * `opengam_typedefs.h` instead of this header alone.
  *
  * When building the shared library (`libopengam.so` or the equivalent
  * on other platforms), define `GAM_BUILD_LIBRARY` so that public
