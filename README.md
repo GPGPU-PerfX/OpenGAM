@@ -26,8 +26,8 @@ no automatic merge from `develop` to `master`. See
 ./build.sh rel
 ```
 
-This configures a Release build and produces `build/libopengam.so`. Other
-modes:
+This configures a Release build and produces `build/libopengam.so`. A
+fresh build tree uses Ninja when `ninja` is on PATH. Other modes:
 
 ```bash
 ./build.sh dbg              # Debug

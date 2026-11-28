@@ -15,6 +15,10 @@ usage() {
     cat <<'USAGE'
 Usage: ./build.sh <mode> [install] [install_prefix=<absolute path>]
 
+A fresh build tree uses the Ninja generator when `ninja` is on PATH.
+An existing CMake cache keeps the generator it was created with;
+run ./build.sh clean to switch.
+
 Modes
   rel        Release build
   dbg        Debug build
@@ -94,7 +98,15 @@ case "$mode" in
     dbg_asan) sanitizers=ON ;;
 esac
 
+# Prefer Ninja on a fresh tree. Do not pass -G when a cache already
+# exists, because CMake will refuse to change the generator in place.
+generator_args=()
+if [[ ! -f "$build_dir/CMakeCache.txt" ]] && command -v ninja >/dev/null 2>&1; then
+    generator_args=(-G Ninja)
+fi
+
 cmake -S "$root" -B "$build_dir" \
+    "${generator_args[@]}" \
     -DCMAKE_BUILD_TYPE="$build_type" \
     -DCMAKE_INSTALL_PREFIX="$install_prefix" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \

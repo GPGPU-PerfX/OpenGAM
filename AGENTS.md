@@ -22,7 +22,8 @@ repository: layout, how to build, public ABI rules, and review targets.
 ## Building
 
 The supported entry point is `build.sh`, which can be run from any
-directory:
+directory. A fresh build tree uses the Ninja generator when `ninja`
+is on PATH; `./build.sh clean` is required to switch generators.
 
 ```bash
 ./build.sh rel        # Release
