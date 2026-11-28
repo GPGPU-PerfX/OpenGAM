@@ -220,13 +220,20 @@ root.
 - Pointer stars attach to the type, as in `void*` and `int*`.
 - Do not format files under `third_party/`.
 
-In first-party Doxygen comments, `\p` and `@p` attach to one identifier.
+Pointer names follow the role of the declaration.
 
-- When referring to a dereferenced parameter, write `*\p name` or `*@p name` so
-  the command marks the variable after the `*`.
-- Do not write `\p *name` or `@p *name`.
-- Keep each file's existing command style: public headers use `\p`, and util headers use `@p`.
-- Do not mass-convert `@p` to `\p`, or the reverse.
+- Public C ABI functions use ordinary parameter names, such as `int* version`.
+- The definition of a public C ABI function must use the same parameter names as
+  the public header.
+- In internal headers and their implementations, pointer parameters and pointer
+  variables take a leading `p`, such as `pPath`, `pSize`, `pBuffer`, and
+  `pCallback`.
+- This applies to raw pointers (`const char*`, `void*`, `FILE*`, `std::size_t*`)
+  and to function pointers.
+- A stack array such as `char path[PATH_MAX]` keeps a name without the `p`
+  prefix.
+- Unit tests may keep local names unless they must match an internal
+  declaration.
 
 In library `.cpp` files, place a 120-character `//` line of `=` characters,
 with a blank line before it, in front of each function definition.

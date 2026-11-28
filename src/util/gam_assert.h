@@ -32,10 +32,15 @@ namespace util
 /**
  * Log a failed assertion and break into the debugger.
  *
- * @p expr is the failed condition, or the name of a `GAM_NOT_IMPLEMENTED` / `GAM_NEVER_REACHED` site. @p fmt may be
+ * @p pExpr is the failed condition, or the name of a `GAM_NOT_IMPLEMENTED` / `GAM_NEVER_REACHED` site. @p pFmt may be
  * null; when present it is a printf-style message appended to the log record.
  */
-[[noreturn]] void assertFail(const char* expr, const char* file, int line, const char* function, const char* fmt, ...)
+[[noreturn]] void assertFail(const char* pExpr,
+                             const char* pFile,
+                             int         line,
+                             const char* pFunction,
+                             const char* pFmt,
+                             ...)
 #if defined(__GNUC__)
     __attribute__((format(printf, 5, 6)))
 #endif

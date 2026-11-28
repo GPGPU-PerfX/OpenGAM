@@ -18,28 +18,33 @@ namespace util
 {
 
 // =====================================================================================================================
-[[noreturn]] void assertFail(const char* expr, const char* file, int line, const char* function, const char* fmt, ...)
+[[noreturn]] void assertFail(const char* pExpr,
+                             const char* pFile,
+                             int         line,
+                             const char* pFunction,
+                             const char* pFmt,
+                             ...)
 {
-    const char* shown = (expr != nullptr && expr[0] != '\0') ? expr : "assertion";
+    const char* pShown = (pExpr != nullptr && pExpr[0] != '\0') ? pExpr : "assertion";
 
     char extra[1024];
     extra[0] = '\0';
 
-    if (fmt != nullptr && fmt[0] != '\0')
+    if (pFmt != nullptr && pFmt[0] != '\0')
     {
         va_list args;
-        va_start(args, fmt);
-        std::vsnprintf(extra, sizeof(extra), fmt, args);
+        va_start(args, pFmt);
+        std::vsnprintf(extra, sizeof(extra), pFmt, args);
         va_end(args);
     }
 
     if (extra[0] != '\0')
     {
-        log(LogLevel::Error, file, line, function, "assertion failed: %s (%s)", shown, extra);
+        log(LogLevel::Error, pFile, line, pFunction, "assertion failed: %s (%s)", pShown, extra);
     }
     else
     {
-        log(LogLevel::Error, file, line, function, "assertion failed: %s", shown);
+        log(LogLevel::Error, pFile, line, pFunction, "assertion failed: %s", pShown);
     }
 
     raise(SIGTRAP);

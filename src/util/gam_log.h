@@ -59,15 +59,15 @@ enum class LogLevel
  * Optional callback invoked for each log record, in addition to the live destinations.
  *
  * @param level   Severity of the record.
- * @param message Formatted record, including the level tag and the call-site location. Never null.
- * @param user    Pointer supplied to ::opengam::util::registerLogCallback.
+ * @param pMessage Formatted record, including the level tag and the call-site location. Never null.
+ * @param pUser   Pointer supplied to ::opengam::util::registerLogCallback.
  */
-using LogCallback = void (*)(LogLevel level, const char* message, void* user);
+using LogCallback = void (*)(LogLevel level, const char* pMessage, void* pUser);
 
 /**
- * Register a callback, replacing any callback already installed. Pass a null @p callback to unregister.
+ * Register a callback, replacing any callback already installed. Pass a null @p pCallback to unregister.
  */
-void registerLogCallback(LogCallback callback, void* user);
+void registerLogCallback(LogCallback pCallback, void* pUser);
 
 /**
  * Remove the registered callback, if any.
@@ -75,29 +75,29 @@ void registerLogCallback(LogCallback callback, void* user);
 void unregisterLogCallback();
 
 /**
- * Copy accumulated log records into @p buffer as a single NUL-terminated string, one record per line, without color.
+ * Copy accumulated log records into @p pBuffer as a single NUL-terminated string, one record per line, without color.
  *
- * @p size is required. On entry it is the capacity of @p buffer in bytes. On exit it is the number of bytes written,
- * not including the NUL terminator. If @p buffer is null, *@p size is set to the number of bytes needed, not including
- * the NUL, and the function returns true. If the buffer is too small, as many complete records as will fit are written,
- * and the buffer is still NUL-terminated when the capacity is greater than zero.
+ * @p pSize is required. On entry it is the capacity of @p pBuffer in bytes. On exit it is the number of bytes written,
+ * not including the NUL terminator. If @p pBuffer is null, *@p pSize is set to the number of bytes needed, not
+ * including the NUL, and the function returns true. If the buffer is too small, as many complete records as will fit
+ * are written, and the buffer is still NUL-terminated when the capacity is greater than zero.
  *
- * @return false if @p size is null.
+ * @return false if @p pSize is null.
  */
-bool dumpLogsToMemory(char* buffer, std::size_t* size);
+bool dumpLogsToMemory(char* pBuffer, std::size_t* pSize);
 
 /**
- * Write the accumulated log records to @p path, replacing the file.
+ * Write the accumulated log records to @p pPath, replacing the file.
  *
- * @return false if @p path is null or the file cannot be written.
+ * @return false if @p pPath is null or the file cannot be written.
  */
-bool dumpLogsToFile(const char* path);
+bool dumpLogsToFile(const char* pPath);
 
 /**
- * Format and emit one log record. The `GAM_LOG_*` macros call this when `GAM_ENABLE_DEBUG` is defined. @p fmt is a
+ * Format and emit one log record. The `GAM_LOG_*` macros call this when `GAM_ENABLE_DEBUG` is defined. @p pFmt is a
  * printf-style string.
  */
-void log(LogLevel level, const char* file, int line, const char* function, const char* fmt, ...)
+void log(LogLevel level, const char* pFile, int line, const char* pFunction, const char* pFmt, ...)
 #if defined(__GNUC__)
     __attribute__((format(printf, 5, 6)))
 #endif

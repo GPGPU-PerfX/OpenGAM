@@ -102,14 +102,14 @@ typedef enum GAMresult_enum
 /**
  * @brief Returns the OpenGAM model version.
  *
- * Writes the version number of the loaded OpenGAM library into *\p version. The version is encoded as (1000 * major +
+ * Writes the version number of the loaded OpenGAM library into \p *version. The version is encoded as (1000 * major +
  * 10 * minor). For example, OpenGAM 0.1 is 10.
  *
  * The value is the version of the library implementation, not merely the version of this header. Compare it with
  * ::GAM_MODEL_VERSION when a program needs to detect a header/library mismatch.
  *
  * This function is always callable. It does not require a device, a prior initialization call, or any other OpenGAM
- * object. A null \p version is rejected; on failure *\p version is not written.
+ * object. A null \p version is rejected; on failure \p *version is not written.
  *
  * @param version Returns the packed OpenGAM model version. Must be non-null.
  *

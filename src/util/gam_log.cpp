@@ -23,8 +23,8 @@ namespace
 
 pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-LogCallback           g_callback  = nullptr;
-void*                 g_user      = nullptr;
+LogCallback           g_pCallback = nullptr;
+void*                 g_pUser     = nullptr;
 constexpr const char* kColorReset = "\033[0m";
 
 constexpr std::size_t kLogDumpCapacity = 64 * 1024;
@@ -69,20 +69,20 @@ const char* levelColor(LogLevel level)
 }
 
 // =====================================================================================================================
-const char* fileName(const char* path)
+const char* fileName(const char* pPath)
 {
-    if (path == nullptr || path[0] == '\0')
+    if (pPath == nullptr || pPath[0] == '\0')
     {
         return "?";
     }
 
-    const char* slash = std::strrchr(path, '/');
-    if (slash != nullptr && slash[1] != '\0')
+    const char* pSlash = std::strrchr(pPath, '/');
+    if (pSlash != nullptr && pSlash[1] != '\0')
     {
-        return slash + 1;
+        return pSlash + 1;
     }
 
-    return path;
+    return pPath;
 }
 
 // =====================================================================================================================
@@ -93,14 +93,14 @@ void dropOldestRecord()
         return;
     }
 
-    const char* newline = static_cast<const char*>(std::memchr(g_dump, '\n', g_dumpUsed));
-    if (newline == nullptr)
+    const char* pNewline = static_cast<const char*>(std::memchr(g_dump, '\n', g_dumpUsed));
+    if (pNewline == nullptr)
     {
         g_dumpUsed = 0;
         return;
     }
 
-    const std::size_t drop = static_cast<std::size_t>(newline - g_dump) + 1;
+    const std::size_t drop = static_cast<std::size_t>(pNewline - g_dump) + 1;
     g_dumpUsed -= drop;
     if (g_dumpUsed > 0)
     {
@@ -109,20 +109,19 @@ void dropOldestRecord()
 }
 
 // =====================================================================================================================
-void appendDump(const char* message)
+void appendDump(const char* pMessage)
 {
-    if (message == nullptr)
+    if (pMessage == nullptr)
     {
         return;
     }
 
-    const std::size_t textLen = std::strlen(message);
+    const std::size_t textLen = std::strlen(pMessage);
     const std::size_t need    = textLen + 1;
-
     if (need > kLogDumpCapacity)
     {
         const std::size_t keep = kLogDumpCapacity - 1;
-        std::memcpy(g_dump, message + (textLen - keep), keep);
+        std::memcpy(g_dump, pMessage + (textLen - keep), keep);
         g_dump[keep] = '\n';
         g_dumpUsed   = kLogDumpCapacity;
         return;
@@ -133,108 +132,106 @@ void appendDump(const char* message)
         dropOldestRecord();
     }
 
-    std::memcpy(g_dump + g_dumpUsed, message, textLen);
+    std::memcpy(g_dump + g_dumpUsed, pMessage, textLen);
     g_dump[g_dumpUsed + textLen] = '\n';
     g_dumpUsed += need;
 }
 
 // =====================================================================================================================
-bool tokenEquals(const char* begin, const char* end, const char* expected)
+bool tokenEquals(const char* pBegin, const char* pEnd, const char* pExpected)
 {
-    const std::size_t length = static_cast<std::size_t>(end - begin);
-    return std::strlen(expected) == length && std::strncmp(begin, expected, length) == 0;
+    const std::size_t length = static_cast<std::size_t>(pEnd - pBegin);
+    return std::strlen(pExpected) == length && std::strncmp(pBegin, pExpected, length) == 0;
 }
 
 // =====================================================================================================================
-void writeStream(FILE* stream, int fd, LogLevel level, const char* message)
+void writeStream(FILE* pStream, int fd, LogLevel level, const char* pMessage)
 {
     const bool color = (::isatty(fd) != 0);
-
     if (color)
     {
-        std::fprintf(stream, "%s%s%s\n", levelColor(level), message, kColorReset);
+        std::fprintf(pStream, "%s%s%s\n", levelColor(level), pMessage, kColorReset);
     }
     else
     {
-        std::fprintf(stream, "%s\n", message);
+        std::fprintf(pStream, "%s\n", pMessage);
     }
 
-    std::fflush(stream);
+    std::fflush(pStream);
 }
 
 // =====================================================================================================================
-void writeFilePath(const char* path, const char* message)
+void writeFilePath(const char* pPath, const char* pMessage)
 {
-    if (path == nullptr || path[0] == '\0')
+    if (pPath == nullptr || pPath[0] == '\0')
     {
         return;
     }
 
-    FILE* file = std::fopen(path, "a");
-    if (file == nullptr)
+    FILE* pFile = std::fopen(pPath, "a");
+    if (pFile == nullptr)
     {
         return;
     }
 
-    std::fprintf(file, "%s\n", message);
-    std::fflush(file);
-    std::fclose(file);
+    std::fprintf(pFile, "%s\n", pMessage);
+    std::fflush(pFile);
+    std::fclose(pFile);
 }
 
 // =====================================================================================================================
-void writeLiveOutputs(LogLevel level, const char* message)
+void writeLiveOutputs(LogLevel level, const char* pMessage)
 {
-    const char* dest = std::getenv("OGAM_LOG_FILE");
-
-    if (dest == nullptr || dest[0] == '\0')
+    const char* pDest = std::getenv("OGAM_LOG_FILE");
+    if (pDest == nullptr || pDest[0] == '\0')
     {
-        writeStream(stderr, STDERR_FILENO, level, message);
-        writeStream(stdout, STDOUT_FILENO, level, message);
+        writeStream(stderr, STDERR_FILENO, level, pMessage);
+        writeStream(stdout, STDOUT_FILENO, level, pMessage);
         return;
     }
 
-    const char* begin = dest;
-    while (*begin != '\0' && std::isspace(static_cast<unsigned char>(*begin)) != 0)
+    const char* pBegin = pDest;
+    while (*pBegin != '\0' && std::isspace(static_cast<unsigned char>(*pBegin)) != 0)
     {
-        ++begin;
+        ++pBegin;
     }
 
-    const char* end = begin + std::strlen(begin);
-    while (end > begin && std::isspace(static_cast<unsigned char>(end[-1])) != 0)
+    const char* pEnd = pBegin + std::strlen(pBegin);
+    while (pEnd > pBegin && std::isspace(static_cast<unsigned char>(pEnd[-1])) != 0)
     {
-        --end;
+        --pEnd;
     }
 
-    if (tokenEquals(begin, end, "stderr"))
+    if (tokenEquals(pBegin, pEnd, "stderr"))
     {
-        writeStream(stderr, STDERR_FILENO, level, message);
+        writeStream(stderr, STDERR_FILENO, level, pMessage);
         return;
     }
 
-    if (tokenEquals(begin, end, "stdout"))
+    if (tokenEquals(pBegin, pEnd, "stdout"))
     {
-        writeStream(stdout, STDOUT_FILENO, level, message);
+        writeStream(stdout, STDOUT_FILENO, level, pMessage);
         return;
     }
 
-    const std::size_t pathLen = static_cast<std::size_t>(end - begin);
+    const std::size_t pathLen = static_cast<std::size_t>(pEnd - pBegin);
     if (pathLen > 0 && pathLen < 4096)
     {
         char path[4096];
-        std::memcpy(path, begin, pathLen);
+        std::memcpy(path, pBegin, pathLen);
         path[pathLen] = '\0';
-        writeFilePath(path, message);
+        writeFilePath(path, pMessage);
     }
 }
 
 } // namespace
 
 // =====================================================================================================================
-void registerLogCallback(LogCallback callback, void* user)
+void registerLogCallback(LogCallback pCallback, void* pUser)
 {
     pthread_mutex_lock(&g_mutex);
-    g_callback = callback;
-    g_user     = user;
+    g_pCallback = pCallback;
+    g_pUser     = pUser;
     pthread_mutex_unlock(&g_mutex);
 }
 
@@ -245,32 +242,32 @@ void unregisterLogCallback()
 }
 
 // =====================================================================================================================
-bool dumpLogsToMemory(char* buffer, std::size_t* size)
+bool dumpLogsToMemory(char* pBuffer, std::size_t* pSize)
 {
-    if (size == nullptr)
+    if (pSize == nullptr)
     {
         return false;
     }
 
     pthread_mutex_lock(&g_mutex);
 
-    if (buffer == nullptr)
+    if (pBuffer == nullptr)
     {
-        *size = g_dumpUsed;
+        *pSize = g_dumpUsed;
         pthread_mutex_unlock(&g_mutex);
         return true;
     }
 
-    if (*size == 0)
+    if (*pSize == 0)
     {
         pthread_mutex_unlock(&g_mutex);
         return true;
     }
 
     std::size_t copy = g_dumpUsed;
-    if (copy >= *size)
+    if (copy >= *pSize)
     {
-        copy = *size - 1;
+        copy = *pSize - 1;
 
         while (copy > 0 && g_dump[copy - 1] != '\n')
         {
@@ -280,67 +277,67 @@ bool dumpLogsToMemory(char* buffer, std::size_t* size)
 
     if (copy > 0)
     {
-        std::memcpy(buffer, g_dump, copy);
+        std::memcpy(pBuffer, g_dump, copy);
     }
 
-    buffer[copy] = '\0';
-    *size        = copy;
+    pBuffer[copy] = '\0';
+    *pSize        = copy;
     pthread_mutex_unlock(&g_mutex);
     return true;
 }
 
 // =====================================================================================================================
-bool dumpLogsToFile(const char* path)
+bool dumpLogsToFile(const char* pPath)
 {
-    if (path == nullptr || path[0] == '\0')
+    if (pPath == nullptr || pPath[0] == '\0')
     {
         return false;
     }
 
-    FILE* file = std::fopen(path, "w");
-    if (file == nullptr)
+    FILE* pFile = std::fopen(pPath, "w");
+    if (pFile == nullptr)
     {
         return false;
     }
 
     pthread_mutex_lock(&g_mutex);
-    const bool ok = (std::fwrite(g_dump, 1, g_dumpUsed, file) == g_dumpUsed);
+    const bool ok = (std::fwrite(g_dump, 1, g_dumpUsed, pFile) == g_dumpUsed);
     pthread_mutex_unlock(&g_mutex);
 
-    const int closed = std::fclose(file);
+    const int closed = std::fclose(pFile);
     return ok && closed == 0;
 }
 
 // =====================================================================================================================
-void log(LogLevel level, const char* file, int line, const char* function, const char* fmt, ...)
+void log(LogLevel level, const char* pFile, int line, const char* pFunction, const char* pFmt, ...)
 {
     char body[1024];
     body[0] = '\0';
 
-    if (fmt != nullptr)
+    if (pFmt != nullptr)
     {
         va_list args;
-        va_start(args, fmt);
-        std::vsnprintf(body, sizeof(body), fmt, args);
+        va_start(args, pFmt);
+        std::vsnprintf(body, sizeof(body), pFmt, args);
         va_end(args);
     }
 
-    const char* func = (function != nullptr && function[0] != '\0') ? function : "?";
+    const char* pFunc = (pFunction != nullptr && pFunction[0] != '\0') ? pFunction : "?";
 
     char message[1280];
-    std::snprintf(message, sizeof(message), "[%s] %s:%d %s: %s", levelTag(level), fileName(file), line, func, body);
+    std::snprintf(message, sizeof(message), "[%s] %s:%d %s: %s", levelTag(level), fileName(pFile), line, pFunc, body);
 
     pthread_mutex_lock(&g_mutex);
 
-    LogCallback callback = g_callback;
-    void*       user     = g_user;
+    LogCallback pCallback = g_pCallback;
+    void*       pUser     = g_pUser;
 
     appendDump(message);
     writeLiveOutputs(level, message);
 
-    if (callback != nullptr)
+    if (pCallback != nullptr)
     {
-        callback(level, message, user);
+        pCallback(level, message, pUser);
     }
 
     pthread_mutex_unlock(&g_mutex);

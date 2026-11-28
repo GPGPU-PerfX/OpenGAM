@@ -41,7 +41,7 @@ extern "C" {
  * @brief Function pointer for ::gamModelGetVersion, introduced in OpenGAM 0.1.
  *
  * The pointed-to function has the same contract as the declaration in `opengam.h`: it writes the packed model version
- * to *\p version and returns ::GAM_SUCCESS, or ::GAM_ERROR_INVALID_VALUE when \p version is null.
+ * to `*version` and returns ::GAM_SUCCESS, or ::GAM_ERROR_INVALID_VALUE when \p version is null.
  */
 typedef GAMresult GAMAPI (*PFN_gamModelGetVersion_v10)(int* version);
 
