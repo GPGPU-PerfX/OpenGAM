@@ -19,12 +19,23 @@
  * function of the call site. In `rel` the macros are compiled out and
  * do not evaluate their arguments.
  *
- * The default sink writes to stderr. ANSI color is applied only when
- * stderr is a TTY. Tests can install a callback with ::opengam::util::setLogSink
- * to capture output; a callback receives plain text, without color.
- * Passing a null callback, or calling ::opengam::util::resetLogSink,
- * restores the default sink. The callback must not log, because the
- * logger holds a mutex around the sink call.
+ * Live output goes to the destinations in the `OPENGAM_LOG_DEST`
+ * environment variable, a comma-separated list of `stderr`, `stdout`,
+ * and `file=<path>`. If the variable is unset or empty, records are
+ * written to both stderr and stdout. ANSI color is applied only when
+ * a stream is a TTY. A later settings layer can override this choice.
+ *
+ * An optional callback, installed with
+ * ::opengam::util::registerLogCallback, also receives the plain
+ * record, without color. At most one callback is registered at a time;
+ * a later register replaces the previous callback.
+ * ::opengam::util::unregisterLogCallback removes it. The callback must
+ * not log, because the logger holds a mutex around the callback.
+ *
+ * Accumulated records can be copied with
+ * ::opengam::util::dumpLogsToMemory or
+ * ::opengam::util::dumpLogsToFile. Those calls take a snapshot of the
+ * log buffer and do not change the live destinations.
  *
  * Emit is serialized with a POSIX mutex so later multi-threaded use is
  * safe. The log path does not use throwing C++ APIs.
@@ -32,6 +43,8 @@
 
 #ifndef OPENGAM_UTIL_GAM_LOG_H
 #define OPENGAM_UTIL_GAM_LOG_H
+
+#include <cstddef>
 
 namespace opengam
 {
@@ -50,25 +63,49 @@ enum class LogLevel
 };
 
 /**
- * Optional replacement for the default stderr sink.
+ * Optional callback invoked for each log record, in addition to the
+ * live destinations.
  *
  * @param level   Severity of the record.
  * @param message Formatted record, including the level tag and the
  *                call-site location. Never null.
- * @param user    Pointer supplied to ::opengam::util::setLogSink.
+ * @param user    Pointer supplied to ::opengam::util::registerLogCallback.
  */
-using LogSink = void (*)(LogLevel level, const char* message, void* user);
+using LogCallback = void (*)(LogLevel level, const char* message, void* user);
 
 /**
- * Install a capture callback, or pass a null @p sink to restore the
- * default stderr sink.
+ * Register a callback, replacing any callback already installed.
+ * Pass a null @p callback to unregister.
  */
-void setLogSink(LogSink sink, void* user);
+void registerLogCallback(LogCallback callback, void* user);
 
 /**
- * Restore the default stderr sink.
+ * Remove the registered callback, if any.
  */
-void resetLogSink();
+void unregisterLogCallback();
+
+/**
+ * Copy accumulated log records into @p buffer as a single
+ * NUL-terminated string, one record per line, without color.
+ *
+ * @p size is required. On entry it is the capacity of @p buffer in
+ * bytes. On exit it is the number of bytes written, not including the
+ * NUL terminator. If @p buffer is null, @p *size is set to the number
+ * of bytes needed, not including the NUL, and the function returns
+ * true. If the buffer is too small, as many complete records as will
+ * fit are written, and the buffer is still NUL-terminated when the
+ * capacity is greater than zero.
+ *
+ * @return false if @p size is null.
+ */
+bool dumpLogsToMemory(char* buffer, std::size_t* size);
+
+/**
+ * Write the accumulated log records to @p path, replacing the file.
+ *
+ * @return false if @p path is null or the file cannot be written.
+ */
+bool dumpLogsToFile(const char* path);
 
 /**
  * Format and emit one log record. The `GAM_LOG_*` macros call this

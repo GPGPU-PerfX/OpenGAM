@@ -7,6 +7,10 @@
 
 #include <gtest/gtest.h>
 
+#include <cstdio>
+#include <cstdlib>
+#include <fstream>
+#include <iterator>
 #include <string>
 #include <utility>
 #include <vector>
@@ -19,7 +23,7 @@ struct Capture
     std::vector<std::pair<opengam::util::LogLevel, std::string>> records;
 };
 
-void captureSink(opengam::util::LogLevel level, const char* message, void* user)
+void captureCallback(opengam::util::LogLevel level, const char* message, void* user)
 {
     auto* capture = static_cast<Capture*>(user);
     capture->records.emplace_back(level, message != nullptr ? message : "");
@@ -28,15 +32,25 @@ void captureSink(opengam::util::LogLevel level, const char* message, void* user)
 class LogTest : public ::testing::Test
 {
 protected:
-    void TearDown() override { opengam::util::resetLogSink(); }
+    void TearDown() override
+    {
+        opengam::util::unregisterLogCallback();
+        ::unsetenv("OPENGAM_LOG_DEST");
+    }
 };
+
+std::string readFile(const std::string& path)
+{
+    std::ifstream in(path);
+    return std::string((std::istreambuf_iterator<char>(in)), std::istreambuf_iterator<char>());
+}
 
 } // namespace
 
 TEST_F(LogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
 {
     Capture capture;
-    opengam::util::setLogSink(captureSink, &capture);
+    opengam::util::registerLogCallback(captureCallback, &capture);
 
     const int before    = 0;
     int       evaluated = before;
@@ -79,23 +93,96 @@ TEST_F(LogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
 #endif
 }
 
-TEST_F(LogTest, ResetLogSinkRestoresDefaultSink)
+TEST_F(LogTest, UnregisterLogCallbackClearsCallback)
 {
     Capture first;
     Capture second;
 
-    opengam::util::setLogSink(captureSink, &first);
-    opengam::util::resetLogSink();
-    opengam::util::setLogSink(captureSink, &second);
+    opengam::util::registerLogCallback(captureCallback, &first);
+    opengam::util::unregisterLogCallback();
+    opengam::util::registerLogCallback(captureCallback, &second);
 
-    GAM_LOG_INFO("after-reset");
+    GAM_LOG_INFO("after-unregister");
 
 #if defined(GAM_ENABLE_DEBUG)
     EXPECT_TRUE(first.records.empty());
     ASSERT_EQ(second.records.size(), 1u);
-    EXPECT_NE(second.records[0].second.find("after-reset"), std::string::npos);
+    EXPECT_NE(second.records[0].second.find("after-unregister"), std::string::npos);
 #else
     EXPECT_TRUE(first.records.empty());
     EXPECT_TRUE(second.records.empty());
 #endif
+}
+
+TEST_F(LogTest, DumpLogsToMemoryCopiesAccumulatedRecords)
+{
+    std::size_t needed = 0;
+    ASSERT_TRUE(opengam::util::dumpLogsToMemory(nullptr, &needed));
+
+    GAM_LOG_INFO("dump-memory-token");
+
+    std::size_t after = 0;
+    ASSERT_TRUE(opengam::util::dumpLogsToMemory(nullptr, &after));
+
+#if defined(GAM_ENABLE_DEBUG)
+    EXPECT_GT(after, needed);
+
+    std::string buffer(after + 1, '\0');
+    std::size_t size = buffer.size();
+    ASSERT_TRUE(opengam::util::dumpLogsToMemory(buffer.data(), &size));
+    EXPECT_EQ(size, after);
+    EXPECT_NE(buffer.find("dump-memory-token"), std::string::npos);
+    EXPECT_EQ(buffer.find('\033'), std::string::npos);
+#else
+    EXPECT_EQ(after, needed);
+
+    EXPECT_FALSE(opengam::util::dumpLogsToMemory(nullptr, nullptr));
+#endif
+
+    EXPECT_FALSE(opengam::util::dumpLogsToMemory(nullptr, nullptr));
+}
+
+TEST_F(LogTest, DumpLogsToFileWritesAccumulatedRecords)
+{
+    GAM_LOG_WARN("dump-file-token");
+
+    const std::string path = testing::TempDir() + "opengam-dump-logs.txt";
+    std::remove(path.c_str());
+
+#if defined(GAM_ENABLE_DEBUG)
+    ASSERT_TRUE(opengam::util::dumpLogsToFile(path.c_str()));
+    const std::string contents = readFile(path);
+    EXPECT_NE(contents.find("dump-file-token"), std::string::npos);
+    EXPECT_EQ(contents.find('\033'), std::string::npos);
+#else
+    ASSERT_TRUE(opengam::util::dumpLogsToFile(path.c_str()));
+    const std::string contents = readFile(path);
+    EXPECT_EQ(contents.find("dump-file-token"), std::string::npos);
+#endif
+
+    EXPECT_FALSE(opengam::util::dumpLogsToFile(nullptr));
+    EXPECT_FALSE(opengam::util::dumpLogsToFile(""));
+    std::remove(path.c_str());
+}
+
+TEST_F(LogTest, EnvDestFileReceivesLiveRecords)
+{
+    const std::string path = testing::TempDir() + "opengam-env-log.txt";
+    std::remove(path.c_str());
+
+    const std::string dest = "file=" + path;
+    ASSERT_EQ(::setenv("OPENGAM_LOG_DEST", dest.c_str(), 1), 0);
+
+    GAM_LOG_ERROR("env-file-token");
+
+#if defined(GAM_ENABLE_DEBUG)
+    const std::string contents = readFile(path);
+    EXPECT_NE(contents.find("env-file-token"), std::string::npos);
+    EXPECT_EQ(contents.find('\033'), std::string::npos);
+#else
+    std::ifstream in(path);
+    EXPECT_FALSE(in.good() && in.peek() != std::char_traits<char>::eof());
+#endif
+
+    std::remove(path.c_str());
 }

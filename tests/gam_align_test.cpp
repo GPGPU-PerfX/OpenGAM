@@ -10,7 +10,7 @@
 #include <cstddef>
 #include <cstdint>
 
-TEST(AlignTest, IsPowerOfTwo)
+TEST(UtilAlignTest, IsPowerOfTwo)
 {
     EXPECT_TRUE(opengam::util::isPowerOfTwo(1));
     EXPECT_TRUE(opengam::util::isPowerOfTwo(2));
@@ -25,7 +25,7 @@ TEST(AlignTest, IsPowerOfTwo)
     EXPECT_FALSE(opengam::util::isPowerOfTwo(12));
 }
 
-TEST(AlignTest, IsAlignedIntegers)
+TEST(UtilAlignTest, IsAlignedIntegers)
 {
     EXPECT_TRUE(opengam::util::isAligned(std::size_t{0}, std::size_t{16}));
     EXPECT_TRUE(opengam::util::isAligned(std::size_t{16}, std::size_t{16}));
@@ -37,7 +37,7 @@ TEST(AlignTest, IsAlignedIntegers)
     EXPECT_FALSE(opengam::util::isAligned(std::size_t{1}, std::size_t{8}));
 }
 
-TEST(AlignTest, AlignDownIntegers)
+TEST(UtilAlignTest, AlignDownIntegers)
 {
     EXPECT_EQ(opengam::util::alignDown(std::size_t{0}, std::size_t{8}), 0u);
     EXPECT_EQ(opengam::util::alignDown(std::size_t{16}, std::size_t{16}), 16u);
@@ -46,7 +46,7 @@ TEST(AlignTest, AlignDownIntegers)
     EXPECT_EQ(opengam::util::alignDown(std::size_t{4097}, std::size_t{4096}), 4096u);
 }
 
-TEST(AlignTest, AlignUpIntegers)
+TEST(UtilAlignTest, AlignUpIntegers)
 {
     EXPECT_EQ(opengam::util::alignUp(std::size_t{0}, std::size_t{8}), 0u);
     EXPECT_EQ(opengam::util::alignUp(std::size_t{16}, std::size_t{16}), 16u);
@@ -55,7 +55,7 @@ TEST(AlignTest, AlignUpIntegers)
     EXPECT_EQ(opengam::util::alignUp(std::size_t{4097}, std::size_t{4096}), 8192u);
 }
 
-TEST(AlignTest, PointerAlignment)
+TEST(UtilAlignTest, PointerAlignment)
 {
     alignas(16) unsigned char buffer[64];
 
@@ -71,7 +71,7 @@ TEST(AlignTest, PointerAlignment)
     EXPECT_EQ(opengam::util::alignUp(static_cast<const void*>(buffer + 17), 16), static_cast<const void*>(buffer + 32));
 }
 
-TEST(AlignTest, ConstexprIntegerHelpers)
+TEST(UtilAlignTest, ConstexprIntegerHelpers)
 {
     static_assert(opengam::util::isPowerOfTwo(8), "8 is a power of two");
     static_assert(!opengam::util::isPowerOfTwo(3), "3 is not a power of two");
