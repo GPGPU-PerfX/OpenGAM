@@ -91,163 +91,24 @@ extern "C" {
 /**
  * @brief Result codes returned by every OpenGAM C ABI function.
  *
- * ::GAM_SUCCESS is zero and is the only success value. All failures are
- * non-zero. ::GAM_ERROR_NOT_READY is not a failure: it means previously
- * issued asynchronous work has not completed yet, and is distinct from
- * ::GAM_SUCCESS, which means completion.
- *
- * Where a enumerator has the same name as a CUDA driver ::CUresult
- * code, the numeric value is identical. ::GAM_ERROR_OUT_OF_RANGE (702)
- * has no CUDA driver counterpart and is defined here for a supported
- * address or range that lies outside the admitted window.
- *
- * Codes that no current entry point can return are still part of this
- * stable ABI. Later functions will use them with the meanings documented
- * below; callers may handle them now.
+ * ::GAM_SUCCESS is zero and is the only success value. All failures
+ * are non-zero. This first cut only defines the codes that current
+ * entry points can return. Additional codes will be added when a
+ * later function needs them, without changing the meaning or value
+ * of existing enumerators.
  */
 typedef enum GAMresult_enum
 {
     /**
      * The API call completed without errors.
-     * For a query of in-flight work, this also means the work has finished.
      */
     GAM_SUCCESS = 0,
 
     /**
-     * One or more parameters are not within an acceptable range of values.
-     * This includes a required pointer that is null, a size that is not
-     * consistent with the described object, and a field whose value is
-     * reserved or out of domain.
+     * One or more parameters are not within an acceptable range of
+     * values. This includes a required pointer that is null.
      */
-    GAM_ERROR_INVALID_VALUE = 1,
-
-    /**
-     * The API call could not allocate enough memory or other resources
-     * to perform the requested operation.
-     */
-    GAM_ERROR_OUT_OF_MEMORY = 2,
-
-    /**
-     * The library has not been initialized, or initialization failed.
-     * A call that requires a prior successful setup returns this code
-     * until that setup has completed.
-     */
-    GAM_ERROR_NOT_INITIALIZED = 3,
-
-    /**
-     * The library is in the process of shutting down, or has already
-     * been shut down. Remaining calls that require a live library
-     * instance return this code.
-     */
-    GAM_ERROR_DEINITIALIZED = 4,
-
-    /**
-     * No usable device was detected. This is returned when a lookup or
-     * enumeration finds an empty device set.
-     */
-    GAM_ERROR_NO_DEVICE = 100,
-
-    /**
-     * The device ordinal, handle, or other device identity supplied by
-     * the caller does not refer to a valid device, or the requested
-     * action is invalid for that device.
-     */
-    GAM_ERROR_INVALID_DEVICE = 101,
-
-    /**
-     * A map or register operation failed. The named resource was not
-     * made available at the requested address or handle.
-     */
-    GAM_ERROR_MAP_FAILED = 205,
-
-    /**
-     * An unmap or unregister operation failed. The named resource was
-     * not released from the requested address or handle.
-     */
-    GAM_ERROR_UNMAP_FAILED = 206,
-
-    /**
-     * The specified array is currently mapped and therefore cannot be
-     * destroyed until it is unmapped.
-     */
-    GAM_ERROR_ARRAY_IS_MAPPED = 207,
-
-    /**
-     * The resource is already mapped. A second map of the same object
-     * at a conflicting address or with a conflicting state is refused.
-     */
-    GAM_ERROR_ALREADY_MAPPED = 208,
-
-    /**
-     * The resource is not mapped. An operation that requires an active
-     * mapping returns this code.
-     */
-    GAM_ERROR_NOT_MAPPED = 211,
-
-    /**
-     * A mapped resource is not available for access as an array.
-     */
-    GAM_ERROR_NOT_MAPPED_AS_ARRAY = 212,
-
-    /**
-     * A mapped resource is not available for access as a pointer.
-     */
-    GAM_ERROR_NOT_MAPPED_AS_POINTER = 213,
-
-    /**
-     * An operating-system call required by the requested operation
-     * failed. The underlying OS error is not surfaced as a separate
-     * ABI code.
-     */
-    GAM_ERROR_OPERATING_SYSTEM = 304,
-
-    /**
-     * Previously issued asynchronous work has not completed yet.
-     * This is not a failure. It is distinct from ::GAM_SUCCESS, which
-     * indicates completion. A later wait or query may still return
-     * ::GAM_SUCCESS or a terminal error for the same work.
-     */
-    GAM_ERROR_NOT_READY = 600,
-
-    /**
-     * A load or store was rejected by address translation. The access
-     * targeted an unmapped, protected, or otherwise inadmissible
-     * address.
-     */
-    GAM_ERROR_ILLEGAL_ADDRESS = 700,
-
-    /**
-     * A submit or launch did not occur because it could not obtain the
-     * required resources. Typical causes include exhausted queue
-     * capacity or a request larger than the admitted resource limits.
-     */
-    GAM_ERROR_LAUNCH_OUT_OF_RESOURCES = 701,
-
-    /**
-     * The address or range is outside the supported window. This is
-     * distinct from ::GAM_ERROR_ILLEGAL_ADDRESS, which reports a
-     * translation reject of an otherwise well-formed access, and from
-     * ::GAM_ERROR_INVALID_VALUE, which reports a malformed argument.
-     */
-    GAM_ERROR_OUT_OF_RANGE = 702,
-
-    /**
-     * The requested operation is not supported by the current device,
-     * platform, or library build.
-     */
-    GAM_ERROR_NOT_SUPPORTED = 801,
-
-    /**
-     * The timeout specified for a wait operation has expired before
-     * the waited-for condition became true.
-     */
-    GAM_ERROR_TIMEOUT = 909,
-
-    /**
-     * An unknown internal error occurred. This is a last-resort code
-     * for a failure that does not map to a more specific result.
-     */
-    GAM_ERROR_UNKNOWN = 999
+    GAM_ERROR_INVALID_VALUE = 1
 } GAMresult;
 
 /**
