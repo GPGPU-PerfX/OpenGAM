@@ -1,6 +1,6 @@
 # OpenGAM
 
-OpenGAM (Open GPU Architecture Model) is an open-source GPU architecture
+OpenGAM (Open-Source GPU Architecture Model) is an open-source GPU architecture
 model. It is licensed under the Apache License 2.0.
 
 ## Branches
