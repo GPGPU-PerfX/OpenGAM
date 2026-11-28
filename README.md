@@ -110,3 +110,7 @@ runs `./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`, each followe
 
 See [AGENTS.md](AGENTS.md) for the repository layout, public ABI rules, and the expected
 pull-request target.
+
+An optional pre-commit hook formats staged first-party C/C++ files with `.clang-format`.
+Install it with `cp scripts/pre-commit.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`.
+Use `git commit --no-verify` to skip the hook. See [AGENTS.md](AGENTS.md) for details.

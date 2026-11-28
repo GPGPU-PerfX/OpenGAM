@@ -15,7 +15,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-namespace opengam
+namespace gam
 {
 namespace util
 {
@@ -345,4 +345,4 @@ void log(LogLevel level, const char* pFile, int line, const char* pFunction, con
 }
 
 } // namespace util
-} // namespace opengam
+} // namespace gam

@@ -23,12 +23,12 @@
  * If the variable is unset or empty, records are written to both stderr and stdout. ANSI color is applied only when a
  * stream is a TTY. A later settings layer can override this choice.
  *
- * An optional callback, installed with ::opengam::util::registerLogCallback, also receives the plain record, without
+ * An optional callback, installed with ::gam::util::registerLogCallback, also receives the plain record, without
  * color. At most one callback is registered at a time; a later register replaces the previous callback.
- * ::opengam::util::unregisterLogCallback removes it. The callback must not log, because the logger holds a mutex around
+ * ::gam::util::unregisterLogCallback removes it. The callback must not log, because the logger holds a mutex around
  * the callback.
  *
- * Accumulated records can be copied with ::opengam::util::dumpLogsToMemory or ::opengam::util::dumpLogsToFile. Those
+ * Accumulated records can be copied with ::gam::util::dumpLogsToMemory or ::gam::util::dumpLogsToFile. Those
  * calls take a snapshot of the log buffer and do not change the output destination.
  *
  * Emit is serialized with a POSIX mutex so later multi-threaded use is safe. The log path does not use throwing C++
@@ -40,7 +40,7 @@
 
 #include <cstddef>
 
-namespace opengam
+namespace gam
 {
 namespace util
 {
@@ -61,7 +61,7 @@ enum class LogLevel
  *
  * @param level   Severity of the record.
  * @param pMessage Formatted record, including the level tag and the call-site location. Never null.
- * @param pUser   Pointer supplied to ::opengam::util::registerLogCallback.
+ * @param pUser   Pointer supplied to ::gam::util::registerLogCallback.
  */
 using LogCallback = void (*)(LogLevel level, const char* pMessage, void* pUser);
 
@@ -105,21 +105,17 @@ void log(LogLevel level, const char* pFile, int line, const char* pFunction, con
     ;
 
 } // namespace util
-} // namespace opengam
+} // namespace gam
 
 #if defined(OGAM_ENABLE_DEBUG)
 
-#define GAM_LOG_ERROR(...)                                                                                             \
-    ::opengam::util::log(::opengam::util::LogLevel::Error, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_ERROR(...) ::gam::util::log(::gam::util::LogLevel::Error, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define GAM_LOG_WARN(...)                                                                                              \
-    ::opengam::util::log(::opengam::util::LogLevel::Warn, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_WARN(...) ::gam::util::log(::gam::util::LogLevel::Warn, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define GAM_LOG_INFO(...)                                                                                              \
-    ::opengam::util::log(::opengam::util::LogLevel::Info, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_INFO(...) ::gam::util::log(::gam::util::LogLevel::Info, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define GAM_LOG_TRACE(...)                                                                                             \
-    ::opengam::util::log(::opengam::util::LogLevel::Trace, __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_TRACE(...) ::gam::util::log(::gam::util::LogLevel::Trace, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
 #else
 

@@ -20,10 +20,10 @@ namespace
 
 struct Capture
 {
-    std::vector<std::pair<opengam::util::LogLevel, std::string>> records;
+    std::vector<std::pair<gam::util::LogLevel, std::string>> records;
 };
 
-void captureCallback(opengam::util::LogLevel level, const char* message, void* user)
+void captureCallback(gam::util::LogLevel level, const char* message, void* user)
 {
     auto* capture = static_cast<Capture*>(user);
     capture->records.emplace_back(level, message != nullptr ? message : "");
@@ -34,7 +34,7 @@ class UtilLogTest : public ::testing::Test
 protected:
     void TearDown() override
     {
-        opengam::util::unregisterLogCallback();
+        gam::util::unregisterLogCallback();
         ::unsetenv("OPENGAM_LOG_FILE");
     }
 };
@@ -50,7 +50,7 @@ std::string readFile(const std::string& path)
 TEST_F(UtilLogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
 {
     Capture capture;
-    opengam::util::registerLogCallback(captureCallback, &capture);
+    gam::util::registerLogCallback(captureCallback, &capture);
 
     const int before    = 0;
     int       evaluated = before;
@@ -64,10 +64,10 @@ TEST_F(UtilLogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
     ASSERT_EQ(capture.records.size(), 4u);
     EXPECT_EQ(evaluated, before + 4);
 
-    EXPECT_EQ(capture.records[0].first, opengam::util::LogLevel::Error);
-    EXPECT_EQ(capture.records[1].first, opengam::util::LogLevel::Warn);
-    EXPECT_EQ(capture.records[2].first, opengam::util::LogLevel::Info);
-    EXPECT_EQ(capture.records[3].first, opengam::util::LogLevel::Trace);
+    EXPECT_EQ(capture.records[0].first, gam::util::LogLevel::Error);
+    EXPECT_EQ(capture.records[1].first, gam::util::LogLevel::Warn);
+    EXPECT_EQ(capture.records[2].first, gam::util::LogLevel::Info);
+    EXPECT_EQ(capture.records[3].first, gam::util::LogLevel::Trace);
 
     const std::string& error = capture.records[0].second;
     EXPECT_NE(error.find("[ERROR]"), std::string::npos);
@@ -97,9 +97,9 @@ TEST_F(UtilLogTest, UnregisterLogCallbackClearsCallback)
     Capture first;
     Capture second;
 
-    opengam::util::registerLogCallback(captureCallback, &first);
-    opengam::util::unregisterLogCallback();
-    opengam::util::registerLogCallback(captureCallback, &second);
+    gam::util::registerLogCallback(captureCallback, &first);
+    gam::util::unregisterLogCallback();
+    gam::util::registerLogCallback(captureCallback, &second);
 
     GAM_LOG_INFO("after-unregister");
 
@@ -116,29 +116,29 @@ TEST_F(UtilLogTest, UnregisterLogCallbackClearsCallback)
 TEST_F(UtilLogTest, DumpLogsToMemoryCopiesAccumulatedRecords)
 {
     std::size_t needed = 0;
-    ASSERT_TRUE(opengam::util::dumpLogsToMemory(nullptr, &needed));
+    ASSERT_TRUE(gam::util::dumpLogsToMemory(nullptr, &needed));
 
     GAM_LOG_INFO("dump-memory-token");
 
     std::size_t after = 0;
-    ASSERT_TRUE(opengam::util::dumpLogsToMemory(nullptr, &after));
+    ASSERT_TRUE(gam::util::dumpLogsToMemory(nullptr, &after));
 
 #if defined(OGAM_ENABLE_DEBUG)
     EXPECT_GT(after, needed);
 
     std::string buffer(after + 1, '\0');
     std::size_t size = buffer.size();
-    ASSERT_TRUE(opengam::util::dumpLogsToMemory(buffer.data(), &size));
+    ASSERT_TRUE(gam::util::dumpLogsToMemory(buffer.data(), &size));
     EXPECT_EQ(size, after);
     EXPECT_NE(buffer.find("dump-memory-token"), std::string::npos);
     EXPECT_EQ(buffer.find('\033'), std::string::npos);
 #else
     EXPECT_EQ(after, needed);
 
-    EXPECT_FALSE(opengam::util::dumpLogsToMemory(nullptr, nullptr));
+    EXPECT_FALSE(gam::util::dumpLogsToMemory(nullptr, nullptr));
 #endif
 
-    EXPECT_FALSE(opengam::util::dumpLogsToMemory(nullptr, nullptr));
+    EXPECT_FALSE(gam::util::dumpLogsToMemory(nullptr, nullptr));
 }
 
 TEST_F(UtilLogTest, DumpLogsToFileWritesAccumulatedRecords)
@@ -149,18 +149,18 @@ TEST_F(UtilLogTest, DumpLogsToFileWritesAccumulatedRecords)
     std::remove(path.c_str());
 
 #if defined(OGAM_ENABLE_DEBUG)
-    ASSERT_TRUE(opengam::util::dumpLogsToFile(path.c_str()));
+    ASSERT_TRUE(gam::util::dumpLogsToFile(path.c_str()));
     const std::string contents = readFile(path);
     EXPECT_NE(contents.find("dump-file-token"), std::string::npos);
     EXPECT_EQ(contents.find('\033'), std::string::npos);
 #else
-    ASSERT_TRUE(opengam::util::dumpLogsToFile(path.c_str()));
+    ASSERT_TRUE(gam::util::dumpLogsToFile(path.c_str()));
     const std::string contents = readFile(path);
     EXPECT_EQ(contents.find("dump-file-token"), std::string::npos);
 #endif
 
-    EXPECT_FALSE(opengam::util::dumpLogsToFile(nullptr));
-    EXPECT_FALSE(opengam::util::dumpLogsToFile(""));
+    EXPECT_FALSE(gam::util::dumpLogsToFile(nullptr));
+    EXPECT_FALSE(gam::util::dumpLogsToFile(""));
     std::remove(path.c_str());
 }
 

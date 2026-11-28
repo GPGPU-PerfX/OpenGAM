@@ -25,7 +25,7 @@
 #ifndef OPENGAM_UTIL_GAM_ASSERT_H
 #define OPENGAM_UTIL_GAM_ASSERT_H
 
-namespace opengam
+namespace gam
 {
 namespace util
 {
@@ -47,7 +47,7 @@ namespace util
     ;
 
 } // namespace util
-} // namespace opengam
+} // namespace gam
 
 #if defined(OGAM_ENABLE_DEBUG)
 
@@ -56,7 +56,7 @@ namespace util
     {                                                                                                                  \
         if (!(expr))                                                                                                   \
         {                                                                                                              \
-            ::opengam::util::assertFail(#expr, __FILE__, __LINE__, __func__, nullptr);                                 \
+            ::gam::util::assertFail(#expr, __FILE__, __LINE__, __func__, nullptr);                                     \
         }                                                                                                              \
     } while (0)
 
@@ -65,13 +65,13 @@ namespace util
     {                                                                                                                  \
         if (!(expr))                                                                                                   \
         {                                                                                                              \
-            ::opengam::util::assertFail(#expr, __FILE__, __LINE__, __func__, __VA_ARGS__);                             \
+            ::gam::util::assertFail(#expr, __FILE__, __LINE__, __func__, __VA_ARGS__);                                 \
         }                                                                                                              \
     } while (0)
 
-#define GAM_NOT_IMPLEMENTED() ::opengam::util::assertFail("GAM_NOT_IMPLEMENTED", __FILE__, __LINE__, __func__, nullptr)
+#define GAM_NOT_IMPLEMENTED() ::gam::util::assertFail("GAM_NOT_IMPLEMENTED", __FILE__, __LINE__, __func__, nullptr)
 
-#define GAM_NEVER_REACHED() ::opengam::util::assertFail("GAM_NEVER_REACHED", __FILE__, __LINE__, __func__, nullptr)
+#define GAM_NEVER_REACHED() ::gam::util::assertFail("GAM_NEVER_REACHED", __FILE__, __LINE__, __func__, nullptr)
 
 #else
 

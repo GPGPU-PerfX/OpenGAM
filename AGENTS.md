@@ -41,6 +41,8 @@ This file is the working guide for changes in this repository:
   - GoogleTest is compiled into the CMake build directory (`build/googletest` by default).
 - `build.sh` — the developer build entry point.
 - `run_tests.sh` — runs `build/gamUnittests` against the existing `build/` tree.
+- `scripts/pre-commit.sh` — optional Git hook that formats staged first-party C/C++
+  files with the repository `.clang-format`.
 - `.github/workflows/ci.yml` — GitHub Actions builds and tests on Ubuntu 24.04 and macos-latest.
 
 - `doc/` — project documentation, including the branch and release policy in
@@ -220,6 +222,19 @@ root.
 - Pointer stars attach to the type, as in `void*` and `int*`.
 - Do not format files under `third_party/`.
 
+A pre-commit hook in `scripts/pre-commit.sh` formats staged first-party C/C++ files
+with that style and re-stages them so the commit contains the formatted result.
+
+Install it once with:
+
+```bash
+cp scripts/pre-commit.sh .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit
+```
+
+The hook leaves files under `third_party/` unchanged. Use `git commit --no-verify` to
+skip it. If `clang-format` or `.clang-format` is missing, the hook prints a warning
+and continues without formatting.
+
 Pointer names follow the role of the declaration.
 
 - Public C ABI functions use ordinary parameter names, such as `int* version`.
@@ -240,7 +255,8 @@ Name prefixes follow the role of the identifier.
 - Environment variables use the `OPENGAM_` prefix, e.g. `OPENGAM_LOG_FILE`.
 - CMake options use the `OGAM_` prefix, e.g. `OGAM_ENABLE_SANITIZERS`.
 - The Debug-config compile definition for the internal util library is `OGAM_ENABLE_DEBUG`.
-- Public C ABI macros keep the `GAM_` prefix.
+- Macros and other identifiers in code, including internal ones, use the `GAM_`
+  prefix, e.g. `GAMAPI`, `GAM_LOG_*`, and `GAM_ASSERT`.
 
 In library `.cpp` files, place a 120-character `//` line of `=` characters,
 with a blank line before it, in front of each function definition.
