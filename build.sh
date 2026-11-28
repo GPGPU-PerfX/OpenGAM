@@ -102,17 +102,21 @@ esac
 
 # Prefer Ninja on a fresh tree. Do not pass -G when a cache already
 # exists, because CMake will refuse to change the generator in place.
-generator_args=()
-if [[ ! -f "$build_dir/CMakeCache.txt" ]] && command -v ninja >/dev/null 2>&1; then
-    generator_args=(-G Ninja)
-fi
-
-cmake -S "$root" -B "$build_dir" \
-    "${generator_args[@]}" \
-    -DCMAKE_BUILD_TYPE="$build_type" \
-    -DCMAKE_INSTALL_PREFIX="$prefix" \
-    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+# The cmake argv is kept in one non-empty array: expanding an empty
+# array with "${arr[@]}" is an unbound-variable error on Bash 3.2
+# (the macOS system shell) when set -u is on.
+cmake_args=(
+    -S "$root"
+    -B "$build_dir"
+    -DCMAKE_BUILD_TYPE="$build_type"
+    -DCMAKE_INSTALL_PREFIX="$prefix"
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
     -DGAM_ENABLE_SANITIZERS="$sanitizers"
+)
+if [[ ! -f "$build_dir/CMakeCache.txt" ]] && command -v ninja >/dev/null 2>&1; then
+    cmake_args+=(-G Ninja)
+fi
+cmake "${cmake_args[@]}"
 
 cmake --build "$build_dir" --parallel
 
