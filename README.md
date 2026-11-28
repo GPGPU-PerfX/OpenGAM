@@ -55,9 +55,10 @@ git submodule update --init
 ```
 
 This configures a Release build and produces `build/libopengam.so` on Linux, or
-`build/libopengam.dylib` on macOS. A fresh build tree uses Ninja when `ninja` is on PATH. GoogleTest
-is compiled into the CMake build directory (`build/googletest` by default), not into `third_party/`.
-Other modes:
+`build/libopengam.dylib` on macOS. A fresh build tree uses Ninja when `ninja` is on PATH. The build
+also produces an internal static library, `build/libutil.a`, used by the shared library and the
+unit tests. It is not installed and is not part of the public C ABI. GoogleTest is compiled into the
+CMake build directory (`build/googletest` by default), not into `third_party/`. Other modes:
 
 ```bash
 ./build.sh dbg              # Debug
@@ -72,8 +73,10 @@ To install somewhere other than `./install`, pass an absolute `--prefix`:
 ./build.sh rel install --prefix=/usr/local
 ```
 
-`./build.sh install` does not install GoogleTest. `./build.sh --help` lists the same options.
-Arguments may appear in any order. You can also invoke CMake directly:
+`./build.sh install` does not install GoogleTest or the internal `util` static library.
+Logging and assertions in that library are enabled for `dbg` and `dbg_asan`, and compiled out for
+`rel`. `./build.sh --help` lists the same options. Arguments may appear in any order. You can also
+invoke CMake directly:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
