@@ -164,7 +164,7 @@ TEST_F(UtilLogTest, DumpLogsToFileWritesAccumulatedRecords)
     std::remove(path.c_str());
 }
 
-TEST_F(UtilLogTest, EnvLogFileReceivesLiveRecords)
+TEST_F(UtilLogTest, EnvLogFileWritesToDestination)
 {
     const std::string path = testing::TempDir() + "opengam-env-log.txt";
     std::remove(path.c_str());

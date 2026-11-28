@@ -122,7 +122,7 @@ The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
 - Extra arguments are passed through, so `./run_tests.sh --gtest_filter=ModelGetVersionTest.*`
   runs one module.
 - Util coverage lives in `UtilAlignTest`, `UtilLogTest`, and `UtilAssertTest`.
-- Live log output is selected by `OGAM_LOG_FILE` (`stderr`, `stdout`, or a file path).
+- The output destination is selected by `OGAM_LOG_FILE` (`stderr`, `stdout`, or a file path).
   The default is both stderr and stdout.
 - Accumulated records can be copied with `dumpLogsToMemory` and `dumpLogsToFile`.
 - You can also run `./build/gamUnittests` directly.

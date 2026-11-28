@@ -18,7 +18,7 @@
  * source file, line, and function of the call site. In `rel` the macros are compiled out and do not evaluate their
  * arguments.
  *
- * Live output goes to the destination in the `OGAM_LOG_FILE` environment variable: `stderr`, `stdout`, or a file path.
+ * The output destination is selected by the `OGAM_LOG_FILE` environment variable: `stderr`, `stdout`, or a file path.
  * If the variable is unset or empty, records are written to both stderr and stdout. ANSI color is applied only when a
  * stream is a TTY. A later settings layer can override this choice.
  *
@@ -28,7 +28,7 @@
  * the callback.
  *
  * Accumulated records can be copied with ::opengam::util::dumpLogsToMemory or ::opengam::util::dumpLogsToFile. Those
- * calls take a snapshot of the log buffer and do not change the live destinations.
+ * calls take a snapshot of the log buffer and do not change the output destination.
  *
  * Emit is serialized with a POSIX mutex so later multi-threaded use is safe. The log path does not use throwing C++
  * APIs.
@@ -56,7 +56,7 @@ enum class LogLevel
 };
 
 /**
- * Optional callback invoked for each log record, in addition to the live destinations.
+ * Optional callback invoked for each log record, in addition to the output destination.
  *
  * @param level   Severity of the record.
  * @param pMessage Formatted record, including the level tag and the call-site location. Never null.

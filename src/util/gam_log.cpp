@@ -181,7 +181,7 @@ void writeFilePath(const char* pPath, const char* pMessage)
 }
 
 // =====================================================================================================================
-void writeLiveOutputs(LogLevel level, const char* pMessage)
+void writeToDestination(LogLevel level, const char* pMessage)
 {
     const char* pDest = std::getenv("OGAM_LOG_FILE");
     if (pDest == nullptr || pDest[0] == '\0')
@@ -334,7 +334,7 @@ void log(LogLevel level, const char* pFile, int line, const char* pFunction, con
     void*       pUser     = g_pUser;
 
     appendDump(message);
-    writeLiveOutputs(level, message);
+    writeToDestination(level, message);
 
     if (pCallback != nullptr)
     {
