@@ -96,8 +96,11 @@ Build first, then run the tests against that `build/` tree:
 ```
 
 The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
-`./run_tests.sh` does not configure or rebuild. If `build/` is missing
-or has no tests, it exits with a short message to build first.
+`./run_tests.sh` does not configure or rebuild. It runs the
+`gamUnittests` binary in `build/`. If that binary is missing, it exits
+with a short message to build first. Extra arguments are passed through,
+so `./run_tests.sh --gtest_filter=GamModelGetVersion.*` runs one module.
+You can also run `./build/gamUnittests` directly.
 `./build.sh <mode> check` is a shorthand that builds and then runs
 `./run_tests.sh`. `./build.sh <mode> install` runs the tests before
 installing.

@@ -67,12 +67,13 @@ set(BUILD_GMOCK OFF CACHE BOOL "Do not build GoogleMock" FORCE)
 
 add_subdirectory(third_party/googletest "${CMAKE_BINARY_DIR}/googletest" EXCLUDE_FROM_ALL)
 
-enable_testing()
+# gamUnittests is the unit-test binary. Each source file is a test
+# module (a GoogleTest suite) with its own cases.
+add_executable(gamUnittests
+    tests/gam_model_get_version_test.cpp
+)
 
-add_executable(opengam_abi_tests tests/gam_model_get_version_test.cpp)
-target_link_libraries(opengam_abi_tests PRIVATE opengam GTest::gtest_main)
-
-add_test(NAME opengam_abi_tests COMMAND opengam_abi_tests)
+target_link_libraries(gamUnittests PRIVATE opengam GTest::gtest_main)
 
 install(TARGETS opengam
     LIBRARY DESTINATION lib

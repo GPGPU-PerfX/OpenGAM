@@ -8,13 +8,18 @@ set -euo pipefail
 
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
 build_dir="$root/build"
+unittests="$build_dir/gamUnittests"
 
 usage() {
     cat <<'USAGE'
-Usage: ./run_tests.sh
+Usage: ./run_tests.sh [--gtest_filter=<pattern>] [gtest options...]
 
-Runs the OpenGAM tests against the existing default build/ tree.
+Runs build/gamUnittests against the existing default build/ tree.
 Build first with ./build.sh rel, ./build.sh dbg, or ./build.sh dbg_asan.
+
+Extra arguments are passed to the GoogleTest binary, for example:
+
+  ./run_tests.sh --gtest_filter=GamModelGetVersion.*
 USAGE
 }
 
@@ -23,33 +28,17 @@ fail() {
     exit 2
 }
 
-while (($#)); do
-    case "$1" in
-        -h|--help)
-            usage
-            exit 0
-            ;;
-        *)
-            fail "unsupported argument: $1 (try ./run_tests.sh --help)"
-            ;;
-    esac
-    shift
-done
+if [[ "${1:-}" == -h || "${1:-}" == --help ]]; then
+    usage
+    exit 0
+fi
 
 if [[ ! -d "$build_dir" ]]; then
     fail "no build directory at $build_dir; build first with ./build.sh dbg (or rel / dbg_asan)"
 fi
 
-if [[ ! -f "$build_dir/CTestTestfile.cmake" ]]; then
-    fail "no tests in $build_dir; build first with ./build.sh dbg (or rel / dbg_asan)"
-fi
-
-cmake_path="$(command -v cmake || true)"
-if [[ -n "$cmake_path" && -x "${cmake_path%/*}/ctest" ]]; then
-    ctest="${cmake_path%/*}/ctest"
-else
-    command -v ctest >/dev/null 2>&1 || fail "ctest is not on PATH"
-    ctest=ctest
+if [[ ! -x "$unittests" ]]; then
+    fail "no gamUnittests in $build_dir; build first with ./build.sh dbg (or rel / dbg_asan)"
 fi
 
 # Leak detection is not supported by AddressSanitizer on macOS.
@@ -61,4 +50,4 @@ fi
 
 export UBSAN_OPTIONS=halt_on_error=1:print_stacktrace=1
 
-"$ctest" --test-dir "$build_dir" --output-on-failure --no-tests=error --parallel
+"$unittests" "$@"
