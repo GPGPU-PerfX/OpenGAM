@@ -10,12 +10,12 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
 # Apply sanitizer flags to every target in this build, including
 # GoogleTest, which is added below with add_subdirectory.
-option(OPENGAM_ENABLE_SANITIZERS
+option(OGAM_ENABLE_SANITIZERS
     "Build with AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
-if(OPENGAM_ENABLE_SANITIZERS)
+if(OGAM_ENABLE_SANITIZERS)
     if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
             OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-        message(FATAL_ERROR "OPENGAM_ENABLE_SANITIZERS requires GCC or Clang")
+        message(FATAL_ERROR "OGAM_ENABLE_SANITIZERS requires GCC or Clang")
     endif()
     add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
     add_link_options(-fsanitize=address,undefined)

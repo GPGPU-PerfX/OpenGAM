@@ -125,7 +125,7 @@ cmake_args=(
     -DCMAKE_BUILD_TYPE="$build_type"
     -DCMAKE_INSTALL_PREFIX="$prefix"
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
-    -DOPENGAM_ENABLE_SANITIZERS="$sanitizers"
+    -DOGAM_ENABLE_SANITIZERS="$sanitizers"
 )
 if [[ ! -f "$build_dir/CMakeCache.txt" ]] && command -v ninja >/dev/null 2>&1; then
     cmake_args+=(-G Ninja)

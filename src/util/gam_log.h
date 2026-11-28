@@ -14,7 +14,7 @@
  *     GAM_LOG_INFO("loaded model version %d", version);
  *     GAM_LOG_TRACE("align %zu up to %zu", value, alignment);
  *
- * When `GAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds), each macro forwards to the logger with the
+ * When `OGAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds), each macro forwards to the logger with the
  * source file, line, and function of the call site. In `rel` the macros are compiled out and do not evaluate their
  * arguments.
  *
@@ -95,7 +95,7 @@ bool dumpLogsToMemory(char* pBuffer, std::size_t* pSize);
 bool dumpLogsToFile(const char* pPath);
 
 /**
- * Format and emit one log record. The `GAM_LOG_*` macros call this when `GAM_ENABLE_DEBUG` is defined. @p pFmt is a
+ * Format and emit one log record. The `GAM_LOG_*` macros call this when `OGAM_ENABLE_DEBUG` is defined. @p pFmt is a
  * printf-style string.
  */
 void log(LogLevel level, const char* pFile, int line, const char* pFunction, const char* pFmt, ...)
@@ -107,7 +107,7 @@ void log(LogLevel level, const char* pFile, int line, const char* pFunction, con
 } // namespace util
 } // namespace opengam
 
-#if defined(GAM_ENABLE_DEBUG)
+#if defined(OGAM_ENABLE_DEBUG)
 
 #define GAM_LOG_ERROR(...)                                                                                             \
     ::opengam::util::log(::opengam::util::LogLevel::Error, __FILE__, __LINE__, __func__, __VA_ARGS__)

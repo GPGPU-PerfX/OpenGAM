@@ -100,7 +100,7 @@ by default.
 
 Only the symbols named in `opengam.def` or `opengam_macos.exports` are exported.
 
-`dbg` and `dbg_asan` define `GAM_ENABLE_DEBUG` for the internal util library, which enables
+`dbg` and `dbg_asan` define `OGAM_ENABLE_DEBUG` for the internal util library, which enables
 the logging and assertion macros.
 
 In `rel` those macros are compiled out and do not evaluate their arguments.
@@ -234,6 +234,13 @@ Pointer names follow the role of the declaration.
   prefix.
 - Unit tests may keep local names unless they must match an internal
   declaration.
+
+Name prefixes follow the role of the identifier.
+
+- Environment variables use the `OPENGAM_` prefix, e.g. `OPENGAM_LOG_FILE`.
+- CMake options use the `OGAM_` prefix, e.g. `OGAM_ENABLE_SANITIZERS`.
+- The Debug-config compile definition for the internal util library is `OGAM_ENABLE_DEBUG`.
+- Public C ABI macros keep the `GAM_` prefix.
 
 In library `.cpp` files, place a 120-character `//` line of `=` characters,
 with a blank line before it, in front of each function definition.

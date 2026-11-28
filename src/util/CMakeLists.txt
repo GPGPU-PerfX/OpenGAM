@@ -36,7 +36,7 @@ target_compile_options(util PRIVATE
 # macros compile out.
 target_compile_definitions(util
     PUBLIC
-        $<$<CONFIG:Debug>:GAM_ENABLE_DEBUG>
+        $<$<CONFIG:Debug>:OGAM_ENABLE_DEBUG>
 )
 
 find_package(Threads REQUIRED)

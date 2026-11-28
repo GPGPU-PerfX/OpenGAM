@@ -14,7 +14,7 @@
  *     GAM_NOT_IMPLEMENTED();
  *     GAM_NEVER_REACHED();
  *
- * When `GAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds), a failed assertion writes an error log at the
+ * When `OGAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds), a failed assertion writes an error log at the
  * call site and then breaks into the debugger with `raise(SIGTRAP)`. If that signal returns, the process is aborted so
  * execution cannot continue past a failed check.
  *
@@ -49,7 +49,7 @@ namespace util
 } // namespace util
 } // namespace opengam
 
-#if defined(GAM_ENABLE_DEBUG)
+#if defined(OGAM_ENABLE_DEBUG)
 
 #define GAM_ASSERT(expr)                                                                                               \
     do                                                                                                                 \

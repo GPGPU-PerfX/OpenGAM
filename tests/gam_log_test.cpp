@@ -60,7 +60,7 @@ TEST_F(UtilLogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
     GAM_LOG_INFO("info-record %d", ++evaluated);
     GAM_LOG_TRACE("trace-record %d", ++evaluated);
 
-#if defined(GAM_ENABLE_DEBUG)
+#if defined(OGAM_ENABLE_DEBUG)
     ASSERT_EQ(capture.records.size(), 4u);
     EXPECT_EQ(evaluated, before + 4);
 
@@ -103,7 +103,7 @@ TEST_F(UtilLogTest, UnregisterLogCallbackClearsCallback)
 
     GAM_LOG_INFO("after-unregister");
 
-#if defined(GAM_ENABLE_DEBUG)
+#if defined(OGAM_ENABLE_DEBUG)
     EXPECT_TRUE(first.records.empty());
     ASSERT_EQ(second.records.size(), 1u);
     EXPECT_NE(second.records[0].second.find("after-unregister"), std::string::npos);
@@ -123,7 +123,7 @@ TEST_F(UtilLogTest, DumpLogsToMemoryCopiesAccumulatedRecords)
     std::size_t after = 0;
     ASSERT_TRUE(opengam::util::dumpLogsToMemory(nullptr, &after));
 
-#if defined(GAM_ENABLE_DEBUG)
+#if defined(OGAM_ENABLE_DEBUG)
     EXPECT_GT(after, needed);
 
     std::string buffer(after + 1, '\0');
@@ -148,7 +148,7 @@ TEST_F(UtilLogTest, DumpLogsToFileWritesAccumulatedRecords)
     const std::string path = testing::TempDir() + "opengam-dump-logs.txt";
     std::remove(path.c_str());
 
-#if defined(GAM_ENABLE_DEBUG)
+#if defined(OGAM_ENABLE_DEBUG)
     ASSERT_TRUE(opengam::util::dumpLogsToFile(path.c_str()));
     const std::string contents = readFile(path);
     EXPECT_NE(contents.find("dump-file-token"), std::string::npos);
@@ -173,7 +173,7 @@ TEST_F(UtilLogTest, EnvLogFileWritesToDestination)
 
     GAM_LOG_ERROR("env-file-token");
 
-#if defined(GAM_ENABLE_DEBUG)
+#if defined(OGAM_ENABLE_DEBUG)
     const std::string contents = readFile(path);
     EXPECT_NE(contents.find("env-file-token"), std::string::npos);
     EXPECT_EQ(contents.find('\033'), std::string::npos);
