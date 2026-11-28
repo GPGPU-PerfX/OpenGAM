@@ -82,9 +82,8 @@ TEST_F(UtilLogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
     EXPECT_NE(capture.records[3].second.find("[TRACE]"), std::string::npos);
     EXPECT_NE(capture.records[3].second.find("trace-record 4"), std::string::npos);
 
-    // The formatted record includes a line number and the enclosing
-    // function (TestBody under GoogleTest), so a later failure can be
-    // traced to this call site.
+    // The formatted record includes a line number and the enclosing function (TestBody under GoogleTest), so a later
+    // failure can be traced to this call site.
     EXPECT_NE(error.find("gam_log_test.cpp:"), std::string::npos);
     EXPECT_NE(error.find("TestBody"), std::string::npos);
 #else

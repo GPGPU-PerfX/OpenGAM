@@ -212,7 +212,11 @@ Commit and pull-request message bodies are wrapped at 100 character columns.
 First-party C and C++ is formatted with the `.clang-format` at the repository
 root.
 
-- The column limit for code is 120 characters.
+- The column limit is 120 characters for both code and comments.
+- This includes Doxygen comments in public and internal headers.
+- Wrap comment prose at a word boundary at or before column 120.
+- Leave a short comment that already fits on one line as a single line.
+- Do not break URLs.
 - Pointer stars attach to the type, as in `void*` and `int*`.
 - Do not format files under `third_party/`.
 

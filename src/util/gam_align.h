@@ -7,11 +7,10 @@
  * @file gam_align.h
  * @brief Integer and pointer alignment helpers for OpenGAM.
  *
- * These helpers operate on power-of-two alignments. Passing a zero or
- * non-power-of-two alignment is invalid and yields an undefined result.
+ * These helpers operate on power-of-two alignments. Passing a zero or non-power-of-two alignment is invalid and yields
+ * an undefined result.
  *
- * The integer overloads are constexpr. The pointer overloads are
- * inline and use the same bitwise rule on the address.
+ * The integer overloads are constexpr. The pointer overloads are inline and use the same bitwise rule on the address.
  */
 
 #ifndef OPENGAM_UTIL_GAM_ALIGN_H
@@ -34,8 +33,7 @@ constexpr bool isPowerOfTwo(std::size_t value) noexcept
 }
 
 /**
- * Returns true if @p value is a multiple of @p alignment.
- * @p alignment must be a power of two.
+ * Returns true if @p value is a multiple of @p alignment. @p alignment must be a power of two.
  */
 constexpr bool isAligned(std::size_t value, std::size_t alignment) noexcept
 {
@@ -43,8 +41,7 @@ constexpr bool isAligned(std::size_t value, std::size_t alignment) noexcept
 }
 
 /**
- * Returns true if @p ptr is aligned to @p alignment bytes.
- * @p alignment must be a power of two.
+ * Returns true if @p ptr is aligned to @p alignment bytes. @p alignment must be a power of two.
  */
 inline bool isAligned(const void* ptr, std::size_t alignment) noexcept
 {
@@ -53,8 +50,7 @@ inline bool isAligned(const void* ptr, std::size_t alignment) noexcept
 }
 
 /**
- * Rounds @p value down to a multiple of @p alignment.
- * @p alignment must be a power of two.
+ * Rounds @p value down to a multiple of @p alignment. @p alignment must be a power of two.
  */
 constexpr std::size_t alignDown(std::size_t value, std::size_t alignment) noexcept
 {
@@ -62,8 +58,7 @@ constexpr std::size_t alignDown(std::size_t value, std::size_t alignment) noexce
 }
 
 /**
- * Rounds @p ptr down to a multiple of @p alignment bytes.
- * @p alignment must be a power of two.
+ * Rounds @p ptr down to a multiple of @p alignment bytes. @p alignment must be a power of two.
  */
 inline void* alignDown(void* ptr, std::size_t alignment) noexcept
 {
@@ -73,8 +68,7 @@ inline void* alignDown(void* ptr, std::size_t alignment) noexcept
 }
 
 /**
- * Rounds @p ptr down to a multiple of @p alignment bytes.
- * @p alignment must be a power of two.
+ * Rounds @p ptr down to a multiple of @p alignment bytes. @p alignment must be a power of two.
  */
 inline const void* alignDown(const void* ptr, std::size_t alignment) noexcept
 {
@@ -84,11 +78,10 @@ inline const void* alignDown(const void* ptr, std::size_t alignment) noexcept
 }
 
 /**
- * Rounds @p value up to a multiple of @p alignment.
- * @p alignment must be a power of two.
+ * Rounds @p value up to a multiple of @p alignment. @p alignment must be a power of two.
  *
- * If @p value is close to the top of the `std::size_t` range, the
- * intermediate addition may wrap; the result is then also undefined.
+ * If @p value is close to the top of the `std::size_t` range, the intermediate addition may wrap; the result is then
+ * also undefined.
  */
 constexpr std::size_t alignUp(std::size_t value, std::size_t alignment) noexcept
 {
@@ -96,8 +89,7 @@ constexpr std::size_t alignUp(std::size_t value, std::size_t alignment) noexcept
 }
 
 /**
- * Rounds @p ptr up to a multiple of @p alignment bytes.
- * @p alignment must be a power of two.
+ * Rounds @p ptr up to a multiple of @p alignment bytes. @p alignment must be a power of two.
  */
 inline void* alignUp(void* ptr, std::size_t alignment) noexcept
 {
@@ -107,8 +99,7 @@ inline void* alignUp(void* ptr, std::size_t alignment) noexcept
 }
 
 /**
- * Rounds @p ptr up to a multiple of @p alignment bytes.
- * @p alignment must be a power of two.
+ * Rounds @p ptr up to a multiple of @p alignment bytes. @p alignment must be a power of two.
  */
 inline const void* alignUp(const void* ptr, std::size_t alignment) noexcept
 {

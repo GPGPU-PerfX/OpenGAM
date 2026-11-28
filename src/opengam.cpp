@@ -2,10 +2,8 @@
  * Copyright 2026 Tianxiang Luo <JeremyLuo007@163.com>
  * SPDX-License-Identifier: Apache-2.0
  *
- * Implementation of the public OpenGAM C ABI.
- * This translation unit currently exports only gamModelGetVersion.
- * C++ exceptions are disabled for the library build and must not
- * cross the ABI.
+ * Implementation of the public OpenGAM C ABI. This translation unit currently exports only gamModelGetVersion. C++
+ * exceptions are disabled for the library build and must not cross the ABI.
  */
 
 #include <opengam.h>

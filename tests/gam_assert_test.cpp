@@ -25,8 +25,8 @@ TEST_F(UtilAssertTest, MacrosAreNoOpsInReleaseOrPassWhenTrue)
     GAM_ASSERT_MSG(++evaluated == 2, "counter is %d", evaluated);
 
 #if defined(GAM_ENABLE_DEBUG)
-    // The two passing checks evaluate their expressions. The failing
-    // helpers are not called here; they are covered by death tests.
+    // The two passing checks evaluate their expressions. The failing helpers are not called here; they are covered by
+    // death tests.
     EXPECT_EQ(evaluated, 2);
 #else
     GAM_NOT_IMPLEMENTED();

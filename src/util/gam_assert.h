@@ -14,14 +14,12 @@
  *     GAM_NOT_IMPLEMENTED();
  *     GAM_NEVER_REACHED();
  *
- * When `GAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds),
- * a failed assertion writes an error log at the call site and then
- * breaks into the debugger with `raise(SIGTRAP)`. If that signal
- * returns, the process is aborted so execution cannot continue past a
- * failed check.
+ * When `GAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds), a failed assertion writes an error log at the
+ * call site and then breaks into the debugger with `raise(SIGTRAP)`. If that signal returns, the process is aborted so
+ * execution cannot continue past a failed check.
  *
- * In `rel` these macros are compiled out and do not evaluate their
- * arguments. Do not place required work in an assertion expression.
+ * In `rel` these macros are compiled out and do not evaluate their arguments. Do not place required work in an
+ * assertion expression.
  */
 
 #ifndef OPENGAM_UTIL_GAM_ASSERT_H
@@ -34,10 +32,8 @@ namespace util
 /**
  * Log a failed assertion and break into the debugger.
  *
- * @p expr is the failed condition, or the name of a
- * `GAM_NOT_IMPLEMENTED` / `GAM_NEVER_REACHED` site.
- * @p fmt may be null; when present it is a printf-style message
- * appended to the log record.
+ * @p expr is the failed condition, or the name of a `GAM_NOT_IMPLEMENTED` / `GAM_NEVER_REACHED` site. @p fmt may be
+ * null; when present it is a printf-style message appended to the log record.
  */
 [[noreturn]] void assertFail(const char* expr, const char* file, int line, const char* function, const char* fmt, ...)
 #if defined(__GNUC__)

@@ -14,31 +14,24 @@
  *     GAM_LOG_INFO("loaded model version %d", version);
  *     GAM_LOG_TRACE("align %zu up to %zu", value, alignment);
  *
- * When `GAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds),
- * each macro forwards to the logger with the source file, line, and
- * function of the call site. In `rel` the macros are compiled out and
- * do not evaluate their arguments.
+ * When `GAM_ENABLE_DEBUG` is defined (the `dbg` and `dbg_asan` builds), each macro forwards to the logger with the
+ * source file, line, and function of the call site. In `rel` the macros are compiled out and do not evaluate their
+ * arguments.
  *
- * Live output goes to the destination in the `OGAM_LOG_FILE`
- * environment variable: `stderr`, `stdout`, or a file path. If the
- * variable is unset or empty, records are written to both stderr and
- * stdout. ANSI color is applied only when a stream is a TTY. A later
- * settings layer can override this choice.
+ * Live output goes to the destination in the `OGAM_LOG_FILE` environment variable: `stderr`, `stdout`, or a file path.
+ * If the variable is unset or empty, records are written to both stderr and stdout. ANSI color is applied only when a
+ * stream is a TTY. A later settings layer can override this choice.
  *
- * An optional callback, installed with
- * ::opengam::util::registerLogCallback, also receives the plain
- * record, without color. At most one callback is registered at a time;
- * a later register replaces the previous callback.
- * ::opengam::util::unregisterLogCallback removes it. The callback must
- * not log, because the logger holds a mutex around the callback.
+ * An optional callback, installed with ::opengam::util::registerLogCallback, also receives the plain record, without
+ * color. At most one callback is registered at a time; a later register replaces the previous callback.
+ * ::opengam::util::unregisterLogCallback removes it. The callback must not log, because the logger holds a mutex around
+ * the callback.
  *
- * Accumulated records can be copied with
- * ::opengam::util::dumpLogsToMemory or
- * ::opengam::util::dumpLogsToFile. Those calls take a snapshot of the
- * log buffer and do not change the live destinations.
+ * Accumulated records can be copied with ::opengam::util::dumpLogsToMemory or ::opengam::util::dumpLogsToFile. Those
+ * calls take a snapshot of the log buffer and do not change the live destinations.
  *
- * Emit is serialized with a POSIX mutex so later multi-threaded use is
- * safe. The log path does not use throwing C++ APIs.
+ * Emit is serialized with a POSIX mutex so later multi-threaded use is safe. The log path does not use throwing C++
+ * APIs.
  */
 
 #ifndef OPENGAM_UTIL_GAM_LOG_H
@@ -63,19 +56,16 @@ enum class LogLevel
 };
 
 /**
- * Optional callback invoked for each log record, in addition to the
- * live destinations.
+ * Optional callback invoked for each log record, in addition to the live destinations.
  *
  * @param level   Severity of the record.
- * @param message Formatted record, including the level tag and the
- *                call-site location. Never null.
+ * @param message Formatted record, including the level tag and the call-site location. Never null.
  * @param user    Pointer supplied to ::opengam::util::registerLogCallback.
  */
 using LogCallback = void (*)(LogLevel level, const char* message, void* user);
 
 /**
- * Register a callback, replacing any callback already installed.
- * Pass a null @p callback to unregister.
+ * Register a callback, replacing any callback already installed. Pass a null @p callback to unregister.
  */
 void registerLogCallback(LogCallback callback, void* user);
 
@@ -85,16 +75,12 @@ void registerLogCallback(LogCallback callback, void* user);
 void unregisterLogCallback();
 
 /**
- * Copy accumulated log records into @p buffer as a single
- * NUL-terminated string, one record per line, without color.
+ * Copy accumulated log records into @p buffer as a single NUL-terminated string, one record per line, without color.
  *
- * @p size is required. On entry it is the capacity of @p buffer in
- * bytes. On exit it is the number of bytes written, not including the
- * NUL terminator. If @p buffer is null, @p *size is set to the number
- * of bytes needed, not including the NUL, and the function returns
- * true. If the buffer is too small, as many complete records as will
- * fit are written, and the buffer is still NUL-terminated when the
- * capacity is greater than zero.
+ * @p size is required. On entry it is the capacity of @p buffer in bytes. On exit it is the number of bytes written,
+ * not including the NUL terminator. If @p buffer is null, @p *size is set to the number of bytes needed, not including
+ * the NUL, and the function returns true. If the buffer is too small, as many complete records as will fit are written,
+ * and the buffer is still NUL-terminated when the capacity is greater than zero.
  *
  * @return false if @p size is null.
  */
@@ -108,8 +94,8 @@ bool dumpLogsToMemory(char* buffer, std::size_t* size);
 bool dumpLogsToFile(const char* path);
 
 /**
- * Format and emit one log record. The `GAM_LOG_*` macros call this
- * when `GAM_ENABLE_DEBUG` is defined. @p fmt is a printf-style string.
+ * Format and emit one log record. The `GAM_LOG_*` macros call this when `GAM_ENABLE_DEBUG` is defined. @p fmt is a
+ * printf-style string.
  */
 void log(LogLevel level, const char* file, int line, const char* function, const char* fmt, ...)
 #if defined(__GNUC__)
