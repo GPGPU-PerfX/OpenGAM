@@ -20,7 +20,7 @@ repository: layout, how to build, public ABI rules, and review targets.
   on Linux, and `libopengam.dylib` on macOS. Linux and macOS are the
   only supported platforms for now.
 - `build.sh` — the developer build entry point.
-- `.github/workflows/ci.yml` — GitHub Actions builds on Ubuntu.
+- `.github/workflows/ci.yml` — GitHub Actions builds on Ubuntu 24.04 and macos-latest.
 - `doc/` — project documentation, including the branch and release
   policy in `doc/branch-and-release.md`.
 
@@ -59,7 +59,7 @@ with hidden visibility by default. Only the symbols named in
 `opengam.def` or `opengam_macos.exports` are exported.
 
 Pushes and pull requests to `develop` and `master` run
-`.github/workflows/ci.yml` on Ubuntu 24.04, which calls
+`.github/workflows/ci.yml` on Ubuntu 24.04 and macos-latest, which calls
 `./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`.
 
 ## Public ABI

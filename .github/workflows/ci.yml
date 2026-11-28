@@ -1,7 +1,7 @@
 # Copyright 2026 Tianxiang Luo <JeremyLuo007@163.com>
 # SPDX-License-Identifier: Apache-2.0
 #
-# Build OpenGAM on Ubuntu with the developer entry point, build.sh.
+# Build OpenGAM on Ubuntu and macOS with the developer entry point, build.sh.
 
 name: CI
 
@@ -20,18 +20,41 @@ permissions:
 
 jobs:
   build:
-    name: ${{ matrix.mode }}
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
+    name: ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
     strategy:
       fail-fast: false
       matrix:
-        mode: [rel, dbg, dbg_asan]
+        include:
+          - os: ubuntu-24.04
+            mode: rel
+            name: rel
+          - os: ubuntu-24.04
+            mode: dbg
+            name: dbg
+          - os: ubuntu-24.04
+            mode: dbg_asan
+            name: dbg_asan
+          - os: macos-latest
+            mode: rel
+            name: macos-rel
+          - os: macos-latest
+            mode: dbg
+            name: macos-dbg
+          - os: macos-latest
+            mode: dbg_asan
+            name: macos-dbg_asan
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install build tools
+      - name: Install Ubuntu build tools
+        if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y cmake g++ ninja-build
+
+      - name: Install macOS build tools
+        if: runner.os == 'macOS'
+        run: brew install cmake ninja
 
       - name: Build
         run: ./build.sh ${{ matrix.mode }}
