@@ -18,17 +18,26 @@ This file is the working guide for changes in this repository:
 - `include/opengam_typedefs.h` — function-pointer types for loading those entry points dynamically
   (for example with `dlopen`).
 - `src/opengam.cpp` — the shared-library implementation of that ABI.
+- `src/util/` — internal utilities: logging, assertions, and alignment helpers.
+  - Built as the static library `libutil.a` (the archive name follows the platform).
+  - Linked privately into `libopengam` and into `gamUnittests`.
+  - Headers are not installed.
+  - Symbols are not exported from the shared library.
 - `opengam.def` — the public export list on Linux (GNU version script).
 - `opengam_macos.exports` — the public export list on macOS (ld64 exported-symbols list).
   Names use the leading underscore the Mach-O linker expects.
 
-- `tests/` — unit-test modules for the public C ABI, linked into the `gamUnittests` binary.
-  They include only the public headers (`opengam.h` / `opengam_typedefs.h`).
+- `tests/` — unit-test modules, linked into the `gamUnittests` binary.
+  - Public C ABI tests include only the public headers (`opengam.h` /
+    `opengam_typedefs.h`).
+  - Internal util tests include the headers under `src/util/` and call that library
+    directly.
 - `third_party/googletest` — official GoogleTest v1.17.0, checked out as a git submodule.
 
 - `CMakeLists.txt` — builds `libopengam.so` (soname `libopengam.so.0`) on Linux, and
   `libopengam.dylib` on macOS.
   - Linux and macOS are the only supported platforms for now.
+  - `src/util/CMakeLists.txt` builds the internal `util` static library.
   - GoogleTest is compiled into the CMake build directory (`build/googletest` by default).
 - `build.sh` — the developer build entry point.
 - `run_tests.sh` — runs `build/gamUnittests` against the existing `build/` tree.
@@ -50,6 +59,7 @@ The supported entry point is `build.sh`, which can be run from any directory.
 - `./build.sh clean` is required to switch generators.
 - GoogleTest is compiled into `build/googletest` when using the default build directory.
 - GoogleTest is not installed with `./build.sh install`.
+- The internal `util` static library is also not installed.
 
 Build dependencies are:
 
@@ -74,7 +84,7 @@ On macOS: the Xcode Command Line Tools, plus CMake and Ninja (for example
 given, for example `./build.sh rel install --prefix=/usr/local`.
 
 - It runs the tests before installing.
-- It does not install GoogleTest.
+- It does not install GoogleTest or the internal `util` static library.
 
 `./build.sh --help` lists the same options.
 
@@ -89,6 +99,11 @@ The library is C++17, built with exceptions and RTTI disabled, and with hidden v
 by default.
 
 Only the symbols named in `opengam.def` or `opengam_macos.exports` are exported.
+
+`dbg` and `dbg_asan` define `OGAM_ENABLE_DEBUG` for the internal util library, which enables
+the logging and assertion macros.
+
+In `rel` those macros are compiled out and do not evaluate their arguments.
 
 ## Testing
 
@@ -106,6 +121,10 @@ The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
 - If that binary is missing, it exits with a short message to build first.
 - Extra arguments are passed through, so `./run_tests.sh --gtest_filter=ModelGetVersionTest.*`
   runs one module.
+- Util coverage lives in `UtilAlignTest`, `UtilLogTest`, and `UtilAssertTest`.
+- The output destination is selected by `OPENGAM_LOG_FILE` (`stderr`, `stdout`, or a file path).
+  The default is both stderr and stdout.
+- Accumulated records can be copied with `dumpLogsToMemory` and `dumpLogsToFile`.
 - You can also run `./build/gamUnittests` directly.
 
 `./build.sh <mode> check` builds and then runs `./run_tests.sh`.
@@ -126,7 +145,9 @@ The workflow:
 - C++ exceptions must not cross the ABI boundary.
 
 - Entry points use the `GAMAPI` calling convention, written as
-  `GAMresult GAMAPI gamModelGetVersion(int *version)`.
+  `GAMresult GAMAPI gamModelGetVersion(int* version)`.
+- Function-pointer typedefs use the same order, as in
+  `typedef GAMresult GAMAPI (*PFN_gamModelGetVersion_v10)(int* version);`.
 - `GAMAPI` is empty on Linux and macOS.
 
 - The first published entry point is `gamModelGetVersion`.
@@ -187,3 +208,39 @@ Commit and pull-request titles are descriptive.
 - Do not use bracket tags such as `[feature]` or `[bugfix]`.
 
 Commit and pull-request message bodies are wrapped at 100 character columns.
+
+First-party C and C++ is formatted with the `.clang-format` at the repository
+root.
+
+- The column limit is 120 characters for both code and comments.
+- This includes Doxygen comments in public and internal headers.
+- Wrap comment prose at a word boundary at or before column 120.
+- Leave a short comment that already fits on one line as a single line.
+- Do not break URLs.
+- Pointer stars attach to the type, as in `void*` and `int*`.
+- Do not format files under `third_party/`.
+
+Pointer names follow the role of the declaration.
+
+- Public C ABI functions use ordinary parameter names, such as `int* version`.
+- The definition of a public C ABI function must use the same parameter names as
+  the public header.
+- In internal headers and their implementations, pointer parameters and pointer
+  variables take a leading `p`, such as `pPath`, `pSize`, `pBuffer`, and
+  `pCallback`.
+- This applies to raw pointers (`const char*`, `void*`, `FILE*`, `std::size_t*`)
+  and to function pointers.
+- A stack array such as `char path[PATH_MAX]` keeps a name without the `p`
+  prefix.
+- Unit tests may keep local names unless they must match an internal
+  declaration.
+
+Name prefixes follow the role of the identifier.
+
+- Environment variables use the `OPENGAM_` prefix, e.g. `OPENGAM_LOG_FILE`.
+- CMake options use the `OGAM_` prefix, e.g. `OGAM_ENABLE_SANITIZERS`.
+- The Debug-config compile definition for the internal util library is `OGAM_ENABLE_DEBUG`.
+- Public C ABI macros keep the `GAM_` prefix.
+
+In library `.cpp` files, place a 120-character `//` line of `=` characters,
+with a blank line before it, in front of each function definition.

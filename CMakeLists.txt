@@ -10,16 +10,20 @@ set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
 # Apply sanitizer flags to every target in this build, including
 # GoogleTest, which is added below with add_subdirectory.
-option(OPENGAM_ENABLE_SANITIZERS
+option(OGAM_ENABLE_SANITIZERS
     "Build with AddressSanitizer and UndefinedBehaviorSanitizer" OFF)
-if(OPENGAM_ENABLE_SANITIZERS)
+if(OGAM_ENABLE_SANITIZERS)
     if(NOT (CMAKE_CXX_COMPILER_ID STREQUAL "GNU"
             OR CMAKE_CXX_COMPILER_ID MATCHES "Clang"))
-        message(FATAL_ERROR "OPENGAM_ENABLE_SANITIZERS requires GCC or Clang")
+        message(FATAL_ERROR "OGAM_ENABLE_SANITIZERS requires GCC or Clang")
     endif()
     add_compile_options(-fsanitize=address,undefined -fno-omit-frame-pointer)
     add_link_options(-fsanitize=address,undefined)
 endif()
+
+# Internal static library: logging, asserts, and alignment. Not
+# installed and not part of the public C ABI.
+add_subdirectory(src/util)
 
 add_library(opengam SHARED src/opengam.cpp)
 add_library(OpenGAM::opengam ALIAS opengam)
@@ -38,6 +42,7 @@ target_include_directories(opengam
 
 target_compile_definitions(opengam PRIVATE GAM_BUILD_LIBRARY)
 target_compile_options(opengam PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fno-exceptions -fno-rtti>)
+target_link_libraries(opengam PRIVATE util)
 
 # Public export lists: opengam.def is a GNU version script on Linux;
 # opengam_macos.exports is the exported-symbols list on macOS.
@@ -71,9 +76,12 @@ add_subdirectory(third_party/googletest "${CMAKE_BINARY_DIR}/googletest" EXCLUDE
 # module (a GoogleTest suite) with its own cases.
 add_executable(gamUnittests
     tests/gam_model_get_version_test.cpp
+    tests/gam_align_test.cpp
+    tests/gam_log_test.cpp
+    tests/gam_assert_test.cpp
 )
 
-target_link_libraries(gamUnittests PRIVATE opengam GTest::gtest_main)
+target_link_libraries(gamUnittests PRIVATE opengam util GTest::gtest_main)
 
 install(TARGETS opengam
     LIBRARY DESTINATION lib
