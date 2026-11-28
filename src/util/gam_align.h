@@ -19,7 +19,7 @@
 #include <cstddef>
 #include <cstdint>
 
-namespace opengam
+namespace gam
 {
 namespace util
 {
@@ -109,6 +109,6 @@ inline const void* alignUp(const void* pPtr, std::size_t alignment) noexcept
 }
 
 } // namespace util
-} // namespace opengam
+} // namespace gam
 
 #endif /* OPENGAM_UTIL_GAM_ALIGN_H */

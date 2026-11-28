@@ -12,7 +12,7 @@
 #include <cstdio>
 #include <cstdlib>
 
-namespace opengam
+namespace gam
 {
 namespace util
 {
@@ -52,4 +52,4 @@ namespace util
 }
 
 } // namespace util
-} // namespace opengam
+} // namespace gam

@@ -14,7 +14,7 @@ class UtilAssertTest : public ::testing::Test
 protected:
     void SetUp() override { ::testing::FLAGS_gtest_death_test_style = "threadsafe"; }
 
-    void TearDown() override { opengam::util::unregisterLogCallback(); }
+    void TearDown() override { gam::util::unregisterLogCallback(); }
 };
 
 TEST_F(UtilAssertTest, MacrosAreNoOpsInReleaseOrPassWhenTrue)
