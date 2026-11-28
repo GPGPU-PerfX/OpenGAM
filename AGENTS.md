@@ -142,7 +142,7 @@ The workflow:
 - C++ exceptions must not cross the ABI boundary.
 
 - Entry points use the `GAMAPI` calling convention, written as
-  `GAMresult GAMAPI gamModelGetVersion(int *version)`.
+  `GAMresult GAMAPI gamModelGetVersion(int* version)`.
 - `GAMAPI` is empty on Linux and macOS.
 
 - The first published entry point is `gamModelGetVersion`.
@@ -203,3 +203,13 @@ Commit and pull-request titles are descriptive.
 - Do not use bracket tags such as `[feature]` or `[bugfix]`.
 
 Commit and pull-request message bodies are wrapped at 100 character columns.
+
+First-party C and C++ is formatted with the `.clang-format` at the repository
+root.
+
+- The column limit for code is 120 characters.
+- Pointer stars attach to the type, as in `void*` and `int*`.
+- Do not format files under `third_party/`.
+
+In library `.cpp` files, place a 120-character `//` line of `=` characters,
+with a blank line before it, in front of each function definition.

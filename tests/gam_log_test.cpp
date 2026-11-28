@@ -19,19 +19,16 @@ struct Capture
     std::vector<std::pair<opengam::util::LogLevel, std::string>> records;
 };
 
-void captureSink(opengam::util::LogLevel level, const char *message, void *user)
+void captureSink(opengam::util::LogLevel level, const char* message, void* user)
 {
-    auto *capture = static_cast<Capture *>(user);
+    auto* capture = static_cast<Capture*>(user);
     capture->records.emplace_back(level, message != nullptr ? message : "");
 }
 
 class LogTest : public ::testing::Test
 {
 protected:
-    void TearDown() override
-    {
-        opengam::util::resetLogSink();
-    }
+    void TearDown() override { opengam::util::resetLogSink(); }
 };
 
 } // namespace
@@ -41,8 +38,8 @@ TEST_F(LogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
     Capture capture;
     opengam::util::setLogSink(captureSink, &capture);
 
-    const int before = 0;
-    int evaluated = before;
+    const int before    = 0;
+    int       evaluated = before;
 
     GAM_LOG_ERROR("error-record %d", ++evaluated);
     GAM_LOG_WARN("warn-record %d", ++evaluated);
@@ -58,7 +55,7 @@ TEST_F(LogTest, MacrosAreNoOpsInReleaseOrEmitInDebug)
     EXPECT_EQ(capture.records[2].first, opengam::util::LogLevel::Info);
     EXPECT_EQ(capture.records[3].first, opengam::util::LogLevel::Trace);
 
-    const std::string &error = capture.records[0].second;
+    const std::string& error = capture.records[0].second;
     EXPECT_NE(error.find("[ERROR]"), std::string::npos);
     EXPECT_NE(error.find("gam_log_test.cpp"), std::string::npos);
     EXPECT_NE(error.find("error-record 1"), std::string::npos);

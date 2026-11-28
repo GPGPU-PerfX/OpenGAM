@@ -12,15 +12,9 @@
 class AssertTest : public ::testing::Test
 {
 protected:
-    void SetUp() override
-    {
-        ::testing::FLAGS_gtest_death_test_style = "threadsafe";
-    }
+    void SetUp() override { ::testing::FLAGS_gtest_death_test_style = "threadsafe"; }
 
-    void TearDown() override
-    {
-        opengam::util::resetLogSink();
-    }
+    void TearDown() override { opengam::util::resetLogSink(); }
 };
 
 TEST_F(AssertTest, MacrosAreNoOpsInReleaseOrPassWhenTrue)
@@ -50,8 +44,8 @@ TEST_F(AssertTest, AssertFailureLogsAndTraps)
 
 TEST_F(AssertTest, AssertMessageFailureLogsAndTraps)
 {
-    ASSERT_DEATH({ GAM_ASSERT_MSG(1 == 2, "values %d and %d", 1, 2); },
-                 "assertion failed: 1 == 2 \\(values 1 and 2\\)");
+    ASSERT_DEATH(
+        { GAM_ASSERT_MSG(1 == 2, "values %d and %d", 1, 2); }, "assertion failed: 1 == 2 \\(values 1 and 2\\)");
 }
 
 TEST_F(AssertTest, NotImplementedLogsAndTraps)

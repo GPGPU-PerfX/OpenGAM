@@ -62,29 +62,22 @@ TEST(AlignTest, PointerAlignment)
     EXPECT_TRUE(opengam::util::isAligned(buffer, 16));
     EXPECT_FALSE(opengam::util::isAligned(buffer + 1, 16));
 
-    EXPECT_EQ(opengam::util::alignDown(static_cast<void *>(buffer + 1), 16),
-              static_cast<void *>(buffer));
-    EXPECT_EQ(opengam::util::alignDown(static_cast<const void *>(buffer + 17), 16),
-              static_cast<const void *>(buffer + 16));
+    EXPECT_EQ(opengam::util::alignDown(static_cast<void*>(buffer + 1), 16), static_cast<void*>(buffer));
+    EXPECT_EQ(opengam::util::alignDown(static_cast<const void*>(buffer + 17), 16),
+              static_cast<const void*>(buffer + 16));
 
-    EXPECT_EQ(opengam::util::alignUp(static_cast<void *>(buffer), 16),
-              static_cast<void *>(buffer));
-    EXPECT_EQ(opengam::util::alignUp(static_cast<void *>(buffer + 1), 16),
-              static_cast<void *>(buffer + 16));
-    EXPECT_EQ(opengam::util::alignUp(static_cast<const void *>(buffer + 17), 16),
-              static_cast<const void *>(buffer + 32));
+    EXPECT_EQ(opengam::util::alignUp(static_cast<void*>(buffer), 16), static_cast<void*>(buffer));
+    EXPECT_EQ(opengam::util::alignUp(static_cast<void*>(buffer + 1), 16), static_cast<void*>(buffer + 16));
+    EXPECT_EQ(opengam::util::alignUp(static_cast<const void*>(buffer + 17), 16), static_cast<const void*>(buffer + 32));
 }
 
 TEST(AlignTest, ConstexprIntegerHelpers)
 {
     static_assert(opengam::util::isPowerOfTwo(8), "8 is a power of two");
     static_assert(!opengam::util::isPowerOfTwo(3), "3 is not a power of two");
-    static_assert(opengam::util::isAligned(std::size_t{32}, std::size_t{16}),
-                  "32 is 16-byte aligned");
-    static_assert(opengam::util::alignDown(std::size_t{17}, std::size_t{16}) == 16,
-                  "17 aligns down to 16");
-    static_assert(opengam::util::alignUp(std::size_t{17}, std::size_t{16}) == 32,
-                  "17 aligns up to 32");
+    static_assert(opengam::util::isAligned(std::size_t{32}, std::size_t{16}), "32 is 16-byte aligned");
+    static_assert(opengam::util::alignDown(std::size_t{17}, std::size_t{16}) == 16, "17 aligns down to 16");
+    static_assert(opengam::util::alignUp(std::size_t{17}, std::size_t{16}) == 32, "17 aligns up to 32");
 
     SUCCEED();
 }

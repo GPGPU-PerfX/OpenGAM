@@ -14,7 +14,7 @@
  * The ABI is a stable C interface. This header exposes no C++ types, and
  * C++ exceptions do not cross the ABI boundary. All currently exported
  * functions return a ::GAMresult and use the ::GAMAPI calling convention,
- * as in `GAMresult GAMAPI gamModelGetVersion(int *version)`.
+ * as in `GAMresult GAMAPI gamModelGetVersion(int* version)`.
  *
  * The first published entry point is ::gamModelGetVersion. Additional
  * functions will be added to this header without changing the meaning of
@@ -44,7 +44,7 @@
  * Place this macro between the return type and the function name, the
  * same way CUDA driver and runtime headers use `CUDAAPI` / `CUDARTAPI`:
  *
- *     GAMresult GAMAPI gamModelGetVersion(int *version);
+ *     GAMresult GAMAPI gamModelGetVersion(int* version);
  *
  * It is empty on the supported platforms (Linux and macOS).
  * Shared-library export is controlled by `opengam.def` on Linux
@@ -86,8 +86,7 @@ extern "C" {
  * A program may compare this macro with the value returned by
  * ::gamModelGetVersion to detect a header/library mismatch.
  */
-#define GAM_MODEL_VERSION \
-    ((GAM_MODEL_VERSION_MAJOR * 1000) + (GAM_MODEL_VERSION_MINOR * 10))
+#define GAM_MODEL_VERSION ((GAM_MODEL_VERSION_MAJOR * 1000) + (GAM_MODEL_VERSION_MINOR * 10))
 
 /** @} */
 
@@ -136,7 +135,7 @@ typedef enum GAMresult_enum
  * ::GAM_SUCCESS,
  * ::GAM_ERROR_INVALID_VALUE
  */
-GAMresult GAMAPI gamModelGetVersion(int *version);
+GAMresult GAMAPI gamModelGetVersion(int* version);
 
 #if defined(__GNUC__) && defined(GAM_BUILD_LIBRARY)
 #pragma GCC visibility pop

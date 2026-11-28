@@ -21,10 +21,12 @@ namespace
 
 pthread_mutex_t g_mutex = PTHREAD_MUTEX_INITIALIZER;
 
-LogSink g_sink = nullptr;
-void *g_user = nullptr;
+LogSink               g_sink      = nullptr;
+void*                 g_user      = nullptr;
+constexpr const char* kColorReset = "\033[0m";
 
-const char *levelTag(LogLevel level)
+// =====================================================================================================================
+const char* levelTag(LogLevel level)
 {
     switch (level)
     {
@@ -41,7 +43,8 @@ const char *levelTag(LogLevel level)
     return "LOG";
 }
 
-const char *levelColor(LogLevel level)
+// =====================================================================================================================
+const char* levelColor(LogLevel level)
 {
     switch (level)
     {
@@ -58,16 +61,15 @@ const char *levelColor(LogLevel level)
     return "\033[0m";
 }
 
-constexpr const char *kColorReset = "\033[0m";
-
-const char *fileName(const char *path)
+// =====================================================================================================================
+const char* fileName(const char* path)
 {
     if (path == nullptr || path[0] == '\0')
     {
         return "?";
     }
 
-    const char *slash = std::strrchr(path, '/');
+    const char* slash = std::strrchr(path, '/');
     if (slash != nullptr && slash[1] != '\0')
     {
         return slash + 1;
@@ -76,7 +78,8 @@ const char *fileName(const char *path)
     return path;
 }
 
-void writeDefaultSink(LogLevel level, const char *message)
+// =====================================================================================================================
+void writeDefaultSink(LogLevel level, const char* message)
 {
     const bool color = (::isatty(STDERR_FILENO) != 0);
 
@@ -94,7 +97,8 @@ void writeDefaultSink(LogLevel level, const char *message)
 
 } // namespace
 
-void setLogSink(LogSink sink, void *user)
+// =====================================================================================================================
+void setLogSink(LogSink sink, void* user)
 {
     pthread_mutex_lock(&g_mutex);
     g_sink = sink;
@@ -102,20 +106,14 @@ void setLogSink(LogSink sink, void *user)
     pthread_mutex_unlock(&g_mutex);
 }
 
+// =====================================================================================================================
 void resetLogSink()
 {
     setLogSink(nullptr, nullptr);
 }
 
-namespace detail
-{
-
-void log(LogLevel level,
-         const char *file,
-         int line,
-         const char *function,
-         const char *fmt,
-         ...)
+// =====================================================================================================================
+void log(LogLevel level, const char* file, int line, const char* function, const char* fmt, ...)
 {
     char body[1024];
     body[0] = '\0';
@@ -128,22 +126,15 @@ void log(LogLevel level,
         va_end(args);
     }
 
-    const char *func = (function != nullptr && function[0] != '\0') ? function : "?";
+    const char* func = (function != nullptr && function[0] != '\0') ? function : "?";
 
     char message[1280];
-    std::snprintf(message,
-                  sizeof(message),
-                  "[%s] %s:%d %s: %s",
-                  levelTag(level),
-                  fileName(file),
-                  line,
-                  func,
-                  body);
+    std::snprintf(message, sizeof(message), "[%s] %s:%d %s: %s", levelTag(level), fileName(file), line, func, body);
 
     pthread_mutex_lock(&g_mutex);
 
     LogSink sink = g_sink;
-    void *user = g_user;
+    void*   user = g_user;
 
     if (sink != nullptr)
     {
@@ -156,8 +147,6 @@ void log(LogLevel level,
 
     pthread_mutex_unlock(&g_mutex);
 }
-
-} // namespace detail
 
 } // namespace util
 } // namespace opengam

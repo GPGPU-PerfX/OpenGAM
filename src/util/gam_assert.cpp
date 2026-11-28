@@ -16,17 +16,11 @@ namespace opengam
 {
 namespace util
 {
-namespace detail
-{
 
-void assertFail(const char *expr,
-                const char *file,
-                int line,
-                const char *function,
-                const char *fmt,
-                ...)
+// =====================================================================================================================
+[[noreturn]] void assertFail(const char* expr, const char* file, int line, const char* function, const char* fmt, ...)
 {
-    const char *shown = (expr != nullptr && expr[0] != '\0') ? expr : "assertion";
+    const char* shown = (expr != nullptr && expr[0] != '\0') ? expr : "assertion";
 
     char extra[1024];
     extra[0] = '\0';
@@ -41,13 +35,7 @@ void assertFail(const char *expr,
 
     if (extra[0] != '\0')
     {
-        log(LogLevel::Error,
-            file,
-            line,
-            function,
-            "assertion failed: %s (%s)",
-            shown,
-            extra);
+        log(LogLevel::Error, file, line, function, "assertion failed: %s (%s)", shown, extra);
     }
     else
     {
@@ -58,6 +46,5 @@ void assertFail(const char *expr,
     std::abort();
 }
 
-} // namespace detail
 } // namespace util
 } // namespace opengam

@@ -57,65 +57,51 @@ enum class LogLevel
  *                call-site location. Never null.
  * @param user    Pointer supplied to ::opengam::util::setLogSink.
  */
-using LogSink = void (*)(LogLevel level, const char *message, void *user);
+using LogSink = void (*)(LogLevel level, const char* message, void* user);
 
 /**
  * Install a capture callback, or pass a null @p sink to restore the
  * default stderr sink.
  */
-void setLogSink(LogSink sink, void *user);
+void setLogSink(LogSink sink, void* user);
 
 /**
  * Restore the default stderr sink.
  */
 void resetLogSink();
 
-namespace detail
-{
-
 /**
  * Format and emit one log record. The `GAM_LOG_*` macros call this
  * when `GAM_ENABLE_DEBUG` is defined. @p fmt is a printf-style string.
  */
-void log(LogLevel level,
-         const char *file,
-         int line,
-         const char *function,
-         const char *fmt,
-         ...)
+void log(LogLevel level, const char* file, int line, const char* function, const char* fmt, ...)
 #if defined(__GNUC__)
     __attribute__((format(printf, 5, 6)))
 #endif
     ;
-
-} // namespace detail
 
 } // namespace util
 } // namespace opengam
 
 #if defined(GAM_ENABLE_DEBUG)
 
-#define GAM_LOG_ERROR(...) \
-    ::opengam::util::detail::log(::opengam::util::LogLevel::Error, \
-                                 __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_ERROR(...)                                                                                             \
+    ::opengam::util::log(::opengam::util::LogLevel::Error, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define GAM_LOG_WARN(...) \
-    ::opengam::util::detail::log(::opengam::util::LogLevel::Warn, \
-                                 __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_WARN(...)                                                                                              \
+    ::opengam::util::log(::opengam::util::LogLevel::Warn, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define GAM_LOG_INFO(...) \
-    ::opengam::util::detail::log(::opengam::util::LogLevel::Info, \
-                                 __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_INFO(...)                                                                                              \
+    ::opengam::util::log(::opengam::util::LogLevel::Info, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
-#define GAM_LOG_TRACE(...) \
-    ::opengam::util::detail::log(::opengam::util::LogLevel::Trace, \
-                                 __FILE__, __LINE__, __func__, __VA_ARGS__)
+#define GAM_LOG_TRACE(...)                                                                                             \
+    ::opengam::util::log(::opengam::util::LogLevel::Trace, __FILE__, __LINE__, __func__, __VA_ARGS__)
 
 #else
 
 #define GAM_LOG_ERROR(...) ((void)0)
-#define GAM_LOG_WARN(...) ((void)0)
-#define GAM_LOG_INFO(...) ((void)0)
+#define GAM_LOG_WARN(...)  ((void)0)
+#define GAM_LOG_INFO(...)  ((void)0)
 #define GAM_LOG_TRACE(...) ((void)0)
 
 #endif

@@ -10,7 +10,8 @@
 
 #include <opengam.h>
 
-extern "C" GAMresult GAMAPI gamModelGetVersion(int *version)
+// =====================================================================================================================
+extern "C" GAMresult GAMAPI gamModelGetVersion(int* version)
 {
     /* A null out-parameter is the only failure this call can report. */
     if (version == nullptr)
