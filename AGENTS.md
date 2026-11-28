@@ -32,8 +32,9 @@ directory:
 ./build.sh clean
 ```
 
-`install` places headers and the library in `./install` unless
-`-DCMAKE_INSTALL_PREFIX` is passed after `--`. `./build.sh --help`
+`install` places headers and the library in `./install` unless an
+absolute `install_prefix=<path>` is given, for example
+`./build.sh rel install install_prefix=/usr/local`. `./build.sh --help`
 lists the same options. Equivalent CMake invocation:
 
 ```bash

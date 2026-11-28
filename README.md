@@ -36,15 +36,15 @@ modes:
 ./build.sh clean            # Remove the build directory
 ```
 
-Pass extra CMake configure arguments after `--`. For example, to install
-somewhere other than `./install`:
+To install somewhere other than `./install`, pass an absolute
+`install_prefix`:
 
 ```bash
-./build.sh rel install -- -DCMAKE_INSTALL_PREFIX=/usr/local
+./build.sh rel install install_prefix=/usr/local
 ```
 
-`./build.sh --help` lists the same options. You can also invoke CMake
-directly:
+`./build.sh --help` lists the same options. Arguments may appear in any
+order. You can also invoke CMake directly:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release

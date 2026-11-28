@@ -13,7 +13,7 @@ install_prefix="$root/install"
 
 usage() {
     cat <<'USAGE'
-Usage: ./build.sh <mode> [install] [-- <cmake configure args>...]
+Usage: ./build.sh <mode> [install] [install_prefix=<absolute path>]
 
 Modes
   rel        Release build
@@ -22,17 +22,19 @@ Modes
   clean      Delete the build directory and exit
 
 Options
-  install    After a successful build, install into the prefix
-             (default: <source>/install). Override with
-             -- -DCMAKE_INSTALL_PREFIX=<path>
-  --         Pass the remaining arguments to the CMake configure step
+  install                  After a successful build, install into the prefix
+                           (default: <source>/install)
+  install_prefix=<path>    Override the install prefix. The path must be
+                           absolute.
+
+Arguments may appear in any order.
 
 Examples
   ./build.sh rel
   ./build.sh dbg
   ./build.sh dbg_asan
   ./build.sh rel install
-  ./build.sh rel -- -DCMAKE_INSTALL_PREFIX=/usr/local
+  ./build.sh dbg install install_prefix=/usr/local
   ./build.sh clean
 USAGE
 }
@@ -44,7 +46,6 @@ fail() {
 
 mode=""
 do_install=false
-extra=()
 
 while (($#)); do
     case "$1" in
@@ -59,10 +60,13 @@ while (($#)); do
         install)
             do_install=true
             ;;
+        install_prefix=*)
+            install_prefix="${1#install_prefix=}"
+            [[ -n "$install_prefix" ]] || fail "install_prefix is empty"
+            [[ "$install_prefix" == /* ]] || fail "install_prefix must be an absolute path"
+            ;;
         --)
-            shift
-            extra=("$@")
-            break
+            fail "CMake passthrough after -- is not supported; use install_prefix=<absolute path>"
             ;;
         *)
             fail "unsupported argument: $1 (try ./build.sh --help)"
@@ -74,8 +78,8 @@ done
 [[ -n "$mode" ]] || { usage >&2; exit 2; }
 
 if [[ "$mode" == clean ]]; then
-    [[ "$do_install" == false && ${#extra[@]} -eq 0 ]] ||
-        fail "clean does not take install or CMake arguments"
+    [[ "$do_install" == false && "$install_prefix" == "$root/install" ]] ||
+        fail "clean does not take install or install_prefix"
     rm -rf -- "$build_dir"
     printf 'Removed %s\n' "$build_dir"
     exit 0
@@ -94,8 +98,7 @@ cmake -S "$root" -B "$build_dir" \
     -DCMAKE_BUILD_TYPE="$build_type" \
     -DCMAKE_INSTALL_PREFIX="$install_prefix" \
     -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
-    -DGAM_ENABLE_SANITIZERS="$sanitizers" \
-    "${extra[@]}"
+    -DGAM_ENABLE_SANITIZERS="$sanitizers"
 
 cmake --build "$build_dir" --parallel
 
