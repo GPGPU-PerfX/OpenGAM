@@ -19,7 +19,7 @@ Build first with ./build.sh rel, ./build.sh dbg, or ./build.sh dbg_asan.
 
 Extra arguments are passed to the GoogleTest binary, for example:
 
-  ./run_tests.sh --gtest_filter=GamModelGetVersion.*
+  ./run_tests.sh --gtest_filter=ModelGetVersionTest.*
 USAGE
 }
 

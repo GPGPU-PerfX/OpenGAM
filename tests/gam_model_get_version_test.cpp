@@ -7,12 +7,12 @@
 
 #include <gtest/gtest.h>
 
-TEST(GamModelGetVersion, NullPointerReturnsInvalidValue)
+TEST(ModelGetVersionTest, NullPointerReturnsInvalidValue)
 {
     EXPECT_EQ(gamModelGetVersion(nullptr), GAM_ERROR_INVALID_VALUE);
 }
 
-TEST(GamModelGetVersion, ValidPointerWritesPackedVersion)
+TEST(ModelGetVersionTest, ValidPointerWritesPackedVersion)
 {
     int version = -1;
     ASSERT_EQ(gamModelGetVersion(&version), GAM_SUCCESS);

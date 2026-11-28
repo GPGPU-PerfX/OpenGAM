@@ -87,7 +87,7 @@ The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
 `./run_tests.sh` does not take a build mode and does not rebuild. It
 runs `build/gamUnittests`. If that binary is missing, it exits with a
 short message to build first. Extra arguments are passed through, so
-`./run_tests.sh --gtest_filter=GamModelGetVersion.*` runs one module.
+`./run_tests.sh --gtest_filter=ModelGetVersionTest.*` runs one module.
 You can also run `./build/gamUnittests` directly.
 `./build.sh <mode> check` builds and then runs `./run_tests.sh`.
 
