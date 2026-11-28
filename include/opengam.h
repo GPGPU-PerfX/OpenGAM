@@ -65,16 +65,16 @@ extern "C" {
  *
  * Compile-time and run-time identification of the OpenGAM library.
  * The packed encoding is always (1000 * major + 10 * minor). For
- * example, OpenGAM 1.0 is 1000 and OpenGAM 1.2 would be 1020.
+ * example, OpenGAM 0.1 is 10 and OpenGAM 0.2 would be 20.
  *
  * @{
  */
 
 /** Compile-time major version of this header and library. */
-#define GAM_MODEL_VERSION_MAJOR 1
+#define GAM_MODEL_VERSION_MAJOR 0
 
 /** Compile-time minor version of this header and library. */
-#define GAM_MODEL_VERSION_MINOR 0
+#define GAM_MODEL_VERSION_MINOR 1
 
 /**
  * Packed compile-time version: (1000 * ::GAM_MODEL_VERSION_MAJOR +
@@ -255,7 +255,7 @@ typedef enum gamResult_enum
  *
  * Writes the version number of the loaded OpenGAM library into
  * \p *version. The version is encoded as
- * (1000 * major + 10 * minor). For example, OpenGAM 1.0 is 1000.
+ * (1000 * major + 10 * minor). For example, OpenGAM 0.1 is 10.
  *
  * The value is the version of the library implementation, not merely
  * the version of this header. Compare it with ::GAM_MODEL_VERSION

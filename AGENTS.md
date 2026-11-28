@@ -12,7 +12,7 @@ repository: layout, how to build, public ABI rules, and review targets.
 - `src/opengam.cpp` — the shared-library implementation of that ABI.
 - `opengam.def` — the public export list. On ELF this is a GNU symbol
   version script; on Windows it is the module-definition file.
-- `CMakeLists.txt` — builds `libopengam.so` (soname `libopengam.so.1`).
+- `CMakeLists.txt` — builds `libopengam.so` (soname `libopengam.so.0`).
 - `build.sh` — the developer build entry point.
 - `doc/` — project documentation, including the branch and release
   policy in `doc/branch-and-release.md`.
@@ -51,9 +51,9 @@ with hidden visibility by default. Only the symbols named in
   `GAMresult GAMAPI gamModelGetVersion(int *version)`. `GAMAPI` is
   `__stdcall` on Windows and empty on other platforms.
 - The first published entry point is `gamModelGetVersion`. It writes a
-  packed version of `(1000 * major + 10 * minor)` and returns
-  `GAM_SUCCESS`, or `GAM_ERROR_INVALID_VALUE` when the out-pointer is
-  null.
+  packed version of `(1000 * major + 10 * minor)`. The current model
+  version is 0.1, which is 10. A null out-pointer returns
+  `GAM_ERROR_INVALID_VALUE`.
 - When adding a new public function, declare it in `include/opengam.h`,
   implement it in the library, and add its name to the `global:` list
   in `opengam.def` in the same change. Do not change the meaning of
