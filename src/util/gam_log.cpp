@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <cstring>
 
+#include <limits.h>
 #include <pthread.h>
 #include <unistd.h>
 
@@ -215,9 +216,9 @@ void writeLiveOutputs(LogLevel level, const char* pMessage)
     }
 
     const std::size_t pathLen = static_cast<std::size_t>(pEnd - pBegin);
-    if (pathLen > 0 && pathLen < 4096)
+    if (pathLen > 0 && pathLen < PATH_MAX)
     {
-        char path[4096];
+        char path[PATH_MAX];
         std::memcpy(path, pBegin, pathLen);
         path[pathLen] = '\0';
         writeFilePath(path, pMessage);
