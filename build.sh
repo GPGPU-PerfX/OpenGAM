@@ -23,7 +23,8 @@ Modes
   rel        Release build
   dbg        Debug build
   dbg_asan   Debug build with AddressSanitizer and UndefinedBehaviorSanitizer
-  clean      Delete the build directory and exit
+  clean      Delete the build directory and the default ./install
+             directory, then exit
 
 Options
   install                  After a successful build, install into the prefix
@@ -81,8 +82,13 @@ done
 if [[ "$mode" == clean ]]; then
     [[ "$do_install" == false && "$prefix" == "$root/install" ]] ||
         fail "clean does not take install or --prefix"
+    default_install="$root/install"
     rm -rf -- "$build_dir"
     printf 'Removed %s\n' "$build_dir"
+    if [[ -e "$default_install" || -L "$default_install" ]]; then
+        rm -rf -- "$default_install"
+        printf 'Removed %s\n' "$default_install"
+    fi
     exit 0
 fi
 

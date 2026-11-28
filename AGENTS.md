@@ -34,7 +34,7 @@ is on PATH; `./build.sh clean` is required to switch generators.
 ./build.sh dbg        # Debug
 ./build.sh dbg_asan   # Debug with AddressSanitizer and UndefinedBehaviorSanitizer
 ./build.sh rel install
-./build.sh clean
+./build.sh clean        # Remove the build directory and ./install
 ```
 
 `install` places headers and the library in `./install` unless an

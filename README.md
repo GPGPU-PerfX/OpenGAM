@@ -34,7 +34,7 @@ fresh build tree uses Ninja when `ninja` is on PATH. Other modes:
 ./build.sh dbg              # Debug
 ./build.sh dbg_asan         # Debug with AddressSanitizer and UndefinedBehaviorSanitizer
 ./build.sh rel install      # Build and install to ./install
-./build.sh clean            # Remove the build directory
+./build.sh clean            # Remove the build directory and ./install
 ```
 
 To install somewhere other than `./install`, pass an absolute
