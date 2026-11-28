@@ -220,5 +220,13 @@ root.
 - Pointer stars attach to the type, as in `void*` and `int*`.
 - Do not format files under `third_party/`.
 
+In first-party Doxygen comments, `\p` and `@p` attach to one identifier.
+
+- When referring to a dereferenced parameter, write `*\p name` or `*@p name` so
+  the command marks the variable after the `*`.
+- Do not write `\p *name` or `@p *name`.
+- Keep each file's existing command style: public headers use `\p`, and util headers use `@p`.
+- Do not mass-convert `@p` to `\p`, or the reverse.
+
 In library `.cpp` files, place a 120-character `//` line of `=` characters,
 with a blank line before it, in front of each function definition.

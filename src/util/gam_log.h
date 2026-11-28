@@ -78,7 +78,7 @@ void unregisterLogCallback();
  * Copy accumulated log records into @p buffer as a single NUL-terminated string, one record per line, without color.
  *
  * @p size is required. On entry it is the capacity of @p buffer in bytes. On exit it is the number of bytes written,
- * not including the NUL terminator. If @p buffer is null, @p *size is set to the number of bytes needed, not including
+ * not including the NUL terminator. If @p buffer is null, *@p size is set to the number of bytes needed, not including
  * the NUL, and the function returns true. If the buffer is too small, as many complete records as will fit are written,
  * and the buffer is still NUL-terminated when the capacity is greater than zero.
  *
