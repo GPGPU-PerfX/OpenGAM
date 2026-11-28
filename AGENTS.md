@@ -16,19 +16,31 @@ repository: layout, how to build, public ABI rules, and review targets.
 - `opengam_macos.exports` — the public export list on macOS (ld64
   exported-symbols list). Names use the leading underscore the
   Mach-O linker expects.
+- `tests/` — tests for the public C ABI. They include only the public
+  headers (`opengam.h` / `opengam_typedefs.h`).
+- `third_party/googletest` — official GoogleTest v1.17.0, checked out
+  as a git submodule.
 - `CMakeLists.txt` — builds `libopengam.so` (soname `libopengam.so.0`)
   on Linux, and `libopengam.dylib` on macOS. Linux and macOS are the
-  only supported platforms for now.
+  only supported platforms for now. GoogleTest is compiled into the
+  CMake build directory (`build/googletest` by default).
 - `build.sh` — the developer build entry point.
-- `.github/workflows/ci.yml` — GitHub Actions builds on Ubuntu 24.04 and macos-latest.
+- `run_tests.sh` — runs the tests against the existing `build/` tree.
+- `.github/workflows/ci.yml` — GitHub Actions builds and tests on Ubuntu 24.04 and macos-latest.
 - `doc/` — project documentation, including the branch and release
   policy in `doc/branch-and-release.md`.
 
 ## Building
 
+Clone with `git clone --recurse-submodules`, or run
+`git submodule update --init` after a plain clone. Configure will fail
+with a short message if `third_party/googletest` is missing.
+
 The supported entry point is `build.sh`, which can be run from any
 directory. A fresh build tree uses the Ninja generator when `ninja`
 is on PATH; `./build.sh clean` is required to switch generators.
+GoogleTest is compiled into `build/googletest` when using the default
+build directory, and is not installed with `./build.sh install`.
 
 Build dependencies are CMake 3.16 or newer, a C++17 compiler (GCC or
 Clang), and Ninja when using the default generator. On Ubuntu:
@@ -46,8 +58,10 @@ Command Line Tools, plus CMake and Ninja (for example
 
 `install` places headers and the library in `./install` unless an
 absolute `--prefix=<path>` is given, for example
-`./build.sh rel install --prefix=/usr/local`. `./build.sh --help`
-lists the same options. Equivalent CMake invocation:
+`./build.sh rel install --prefix=/usr/local`. It runs the tests
+before installing and does not install GoogleTest.
+`./build.sh --help` lists the same options. Equivalent CMake
+invocation:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
@@ -58,9 +72,26 @@ The library is C++17, built with exceptions and RTTI disabled, and
 with hidden visibility by default. Only the symbols named in
 `opengam.def` or `opengam_macos.exports` are exported.
 
+## Testing
+
+Build first, then run the tests against that `build/` tree:
+
+```bash
+./build.sh dbg
+./run_tests.sh
+```
+
+The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
+`./run_tests.sh` does not take a build mode and does not rebuild. If
+`build/` is missing or has no tests, it exits with a short message to
+build first. `./build.sh <mode> test` builds and then runs
+`./run_tests.sh`.
+
 Pushes and pull requests to `develop` and `master` run
-`.github/workflows/ci.yml` on Ubuntu 24.04 and macos-latest, which calls
-`./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`.
+`.github/workflows/ci.yml` on Ubuntu 24.04 and macos-latest, which
+checks out the GoogleTest submodule, then calls `./build.sh rel`,
+`./build.sh dbg`, and `./build.sh dbg_asan`, each followed by
+`./run_tests.sh`.
 
 ## Public ABI
 

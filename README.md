@@ -27,6 +27,8 @@ no automatic merge from `develop` to `master`. See
 - A C++17 compiler (GCC or Clang)
 - Ninja, if you want the default generator (`build.sh` uses Ninja when
   `ninja` is on PATH)
+- The official GoogleTest v1.17.0 release, checked out as a git submodule
+  at `third_party/googletest`
 
 On Ubuntu:
 
@@ -37,6 +39,19 @@ sudo apt-get install cmake g++ ninja-build
 On macOS, install the Xcode Command Line Tools for the compiler, and
 CMake and Ninja (for example with Homebrew: `brew install cmake ninja`).
 
+Clone the repository with submodules:
+
+```bash
+git clone --recurse-submodules https://github.com/GPGPU-PerfX/OpenGAM.git
+```
+
+If the tree was cloned without submodules, initialize them before
+configuring a build:
+
+```bash
+git submodule update --init
+```
+
 ## Building
 
 ```bash
@@ -44,12 +59,14 @@ CMake and Ninja (for example with Homebrew: `brew install cmake ninja`).
 ```
 
 This configures a Release build and produces `build/libopengam.so` on Linux, or `build/libopengam.dylib` on macOS. A
-fresh build tree uses Ninja when `ninja` is on PATH. Other modes:
+fresh build tree uses Ninja when `ninja` is on PATH. GoogleTest is
+compiled into the CMake build directory (`build/googletest` by default),
+not into `third_party/`. Other modes:
 
 ```bash
 ./build.sh dbg              # Debug
 ./build.sh dbg_asan         # Debug with AddressSanitizer and UndefinedBehaviorSanitizer
-./build.sh rel install      # Build and install to ./install
+./build.sh rel install      # Build, test, and install to ./install
 ./build.sh clean            # Remove the build directory and ./install
 ```
 
@@ -60,19 +77,38 @@ To install somewhere other than `./install`, pass an absolute
 ./build.sh rel install --prefix=/usr/local
 ```
 
-`./build.sh --help` lists the same options. Arguments may appear in any
-order. You can also invoke CMake directly:
+`./build.sh install` does not install GoogleTest. `./build.sh --help`
+lists the same options. Arguments may appear in any order. You can also
+invoke CMake directly:
 
 ```bash
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
 
+## Testing
+
+Build first, then run the tests against that `build/` tree:
+
+```bash
+./build.sh dbg
+./run_tests.sh
+```
+
+The same sequence works after `./build.sh rel` or `./build.sh dbg_asan`.
+`./run_tests.sh` does not configure or rebuild. If `build/` is missing
+or has no tests, it exits with a short message to build first.
+`./build.sh <mode> test` is a shorthand that builds and then runs
+`./run_tests.sh`. `./build.sh <mode> install` runs the tests before
+installing.
+
 ## Continuous integration
 
 Pushes and pull requests to `develop` and `master` run GitHub Actions
 on Ubuntu 24.04 and macos-latest. The workflow installs the dependencies
-above and runs `./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`.
+above, checks out the GoogleTest submodule, and runs `./build.sh rel`,
+`./build.sh dbg`, and `./build.sh dbg_asan`, each followed by
+`./run_tests.sh`.
 
 ## Contributing
 
