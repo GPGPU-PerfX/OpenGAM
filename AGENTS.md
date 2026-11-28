@@ -240,7 +240,8 @@ Name prefixes follow the role of the identifier.
 - Environment variables use the `OPENGAM_` prefix, e.g. `OPENGAM_LOG_FILE`.
 - CMake options use the `OGAM_` prefix, e.g. `OGAM_ENABLE_SANITIZERS`.
 - The Debug-config compile definition for the internal util library is `OGAM_ENABLE_DEBUG`.
-- Public C ABI macros keep the `GAM_` prefix.
+- Macros and other identifiers in code, including internal ones, use the `GAM_`
+  prefix, e.g. `GAMAPI`, `GAM_LOG_*`, and `GAM_ASSERT`.
 
 In library `.cpp` files, place a 120-character `//` line of `=` characters,
 with a blank line before it, in front of each function definition.
