@@ -105,7 +105,7 @@ extern "C" {
  * stable ABI. Later functions will use them with the meanings documented
  * below; callers may handle them now.
  */
-typedef enum gamResult_enum
+typedef enum GAMresult_enum
 {
     /**
      * The API call completed without errors.
