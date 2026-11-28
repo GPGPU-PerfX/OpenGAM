@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright 2026 The OpenGAM Authors
+# Copyright 2026 Tianxiang Luo <JeremyLuo007@163.com>
 # SPDX-License-Identifier: Apache-2.0
 #
 # Developer build entry point for OpenGAM.
