@@ -21,6 +21,22 @@ Releases are a periodic, explicit port of `develop` onto `master`. There is
 no automatic merge from `develop` to `master`. See
 [doc/branch-and-release.md](doc/branch-and-release.md).
 
+## Dependencies
+
+- CMake 3.16 or newer
+- A C++17 compiler (GCC or Clang)
+- Ninja, if you want the default generator (`build.sh` uses Ninja when
+  `ninja` is on PATH)
+
+On Ubuntu:
+
+```bash
+sudo apt-get install cmake g++ ninja-build
+```
+
+On macOS, install the Xcode Command Line Tools for the compiler, and
+CMake and Ninja (for example with Homebrew: `brew install cmake ninja`).
+
 ## Building
 
 ```bash
@@ -51,6 +67,12 @@ order. You can also invoke CMake directly:
 cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build
 ```
+
+## Continuous integration
+
+Pushes and pull requests to `develop` and `master` run GitHub Actions
+on Ubuntu 24.04. The workflow installs the dependencies above and runs
+`./build.sh rel`, `./build.sh dbg`, and `./build.sh dbg_asan`.
 
 ## Contributing
 
